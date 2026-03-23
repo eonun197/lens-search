@@ -272,7 +272,7 @@ async function analyzeStyle(dataUrl) {
 
     // 실패 시 로컬 분석
     if (!scores) {
-        scores = analyzeLocal(dataUrl);
+        scores = await analyzeLocal(dataUrl);
     }
 
     loading.classList.remove('visible');
