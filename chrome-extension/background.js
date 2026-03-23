@@ -1,3 +1,15 @@
+// 아이콘 클릭 → 작은 창 열기
+chrome.action.onClicked.addListener(() => {
+  chrome.windows.create({
+    url: chrome.runtime.getURL("popup.html"),
+    type: "popup",
+    width: 360,
+    height: 520,
+    top: 100,
+    left: 100
+  });
+});
+
 // 단축키 → 즉시 탭 캡처 → content script에 전달
 chrome.commands.onCommand.addListener((command) => {
   if (command === "lens-search") {

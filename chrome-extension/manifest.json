@@ -1,10 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Lens Search",
-  "description": "Cmd+L로 화면 캡처 → 즉시 Google Lens 검색",
+  "name": "Style Catcher",
+  "description": "이미지를 올리면 디자인 스타일을 분석해요",
   "version": "1.0",
   "permissions": ["activeTab", "tabs"],
   "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_icon": "icon.png"
+  },
   "background": {
     "service_worker": "background.js"
   },
@@ -16,8 +19,8 @@
   "commands": {
     "lens-search": {
       "suggested_key": {
-        "default": "Ctrl+L",
-        "mac": "Command+L"
+        "default": "Ctrl+Shift+L",
+        "mac": "Command+Shift+L"
       },
       "description": "캡처해서 Google Lens 검색"
     }
