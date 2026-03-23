@@ -160,9 +160,12 @@ cat > "$WORKFLOW_DIR/$WORKFLOW_NAME/Contents/document.wflow" << WEOF
 WEOF
 
 echo ""
-echo "  ✅ Lens Search 설치 완료!"
+echo "  ✅ 스크립트 설치 완료! 단축어를 설치합니다..."
 echo ""
-echo "  마지막 단계 — 단축키 설정:"
-echo "  시스템 설정 → 키보드 → 키보드 단축키 → 서비스"
-echo "  → 'Lens Search' 찾아서 단축키 지정 (예: Cmd+Shift+L)"
+
+# 3. 단축어 자동 설치 (iCloud 링크 열기)
+open "https://www.icloud.com/shortcuts/9e5c7b7fcfe648a09ffe08560427d030"
+
+echo "  단축어 추가 화면이 열렸습니다."
+echo "  '단축어 추가' 버튼을 눌러주세요!"
 echo ""
