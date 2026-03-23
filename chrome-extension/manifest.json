@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Lens Search",
+  "description": "Cmd+L로 화면 캡처 → 즉시 Google Lens 검색",
+  "version": "1.0",
+  "permissions": ["activeTab", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"],
+    "css": ["overlay.css"]
+  }],
+  "commands": {
+    "lens-search": {
+      "suggested_key": {
+        "default": "Ctrl+L",
+        "mac": "Command+L"
+      },
+      "description": "캡처해서 Google Lens 검색"
+    }
+  },
+  "icons": {
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
