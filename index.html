@@ -3,423 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Style Catcher</title>
+    <title>Font Catcher</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background: #0f0f0f;
             color: #fff;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 48px 20px;
-        }
-
-        h1 { font-size: 40px; font-weight: 800; margin-bottom: 6px; }
-        .subtitle { color: #666; font-size: 14px; margin-bottom: 36px; }
-
-        /* 업로드 영역 */
-        .upload-area {
-            width: 100%;
-            max-width: 500px;
-            border: 2px dashed #333;
-            border-radius: 16px;
+            justify-content: center;
             padding: 60px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 32px;
         }
-        .upload-area:hover, .upload-area.dragover {
-            border-color: #3b82f6;
-            background: #111;
-        }
-        .upload-area.has-image {
-            padding: 16px;
-            border-style: solid;
-            border-color: #333;
-        }
-        .upload-icon { font-size: 48px; margin-bottom: 12px; }
-        .upload-text { color: #888; font-size: 15px; }
-        .upload-text strong { color: #ccc; }
-        .upload-preview {
-            max-width: 100%;
-            max-height: 250px;
-            border-radius: 10px;
-        }
-        .change-text { color: #555; font-size: 12px; margin-top: 8px; }
-        #fileInput { display: none; }
+        .container { max-width: 520px; width: 100%; }
 
-        /* 또는 붙여넣기 안내 */
-        .paste-hint {
-            color: #444;
-            font-size: 12px;
-            margin-top: -20px;
-            margin-bottom: 24px;
-        }
+        h1 { font-size: 38px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+        .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 36px; }
 
-        /* 로딩 */
-        .loading { display: none; text-align: center; margin-bottom: 32px; }
-        .loading.visible { display: block; }
-        .loading-text { color: #3b82f6; font-size: 14px; margin-bottom: 8px; }
-        .progress-bar {
-            width: 300px;
-            height: 4px;
-            background: #1a1a1a;
-            border-radius: 2px;
-            margin: 0 auto;
-            overflow: hidden;
+        .download-btn {
+            display: block; width: 100%; padding: 18px;
+            background: #3b82f6; color: white; text-align: center;
+            font-size: 17px; font-weight: 700; border-radius: 14px;
+            text-decoration: none; margin-bottom: 32px; transition: opacity 0.2s;
         }
-        .progress-fill {
-            width: 70px;
-            height: 100%;
-            background: #3b82f6;
-            border-radius: 2px;
-            animation: slide 1s ease-in-out infinite;
+        .download-btn:hover { opacity: 0.85; }
+
+        .step {
+            background: #1a1a1a; border-radius: 14px; padding: 20px;
+            margin-bottom: 12px; border: 1px solid #222;
         }
-        @keyframes slide {
-            0% { transform: translateX(-70px); }
-            100% { transform: translateX(300px); }
+        .step-num {
+            display: inline-block; width: 28px; height: 28px;
+            background: #3b82f6; color: white; border-radius: 50%;
+            text-align: center; line-height: 28px; font-weight: 700;
+            font-size: 13px; margin-right: 10px;
+        }
+        .step-title { display: inline; font-size: 15px; font-weight: 700; }
+        .step-desc { margin-top: 8px; color: #888; font-size: 13px; line-height: 1.7; }
+        .step-code {
+            background: #111; color: #4ade80; padding: 8px 14px;
+            border-radius: 8px; font-family: monospace; font-size: 12px;
+            margin-top: 6px; user-select: all;
         }
 
-        /* 결과 */
-        .results { display: none; width: 100%; max-width: 500px; }
-        .results.visible { display: block; }
+        .features {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 28px 0;
+        }
+        .feature {
+            background: #1a1a1a; border: 1px solid #222;
+            border-radius: 12px; padding: 16px; text-align: center;
+        }
+        .feature-icon { font-size: 24px; margin-bottom: 6px; }
+        .feature-text { font-size: 12px; color: #888; }
 
-        .result-card {
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-        }
-        .result-image {
-            width: 100%;
-            border-radius: 10px;
-            margin-bottom: 16px;
-        }
-        .top-style {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 4px;
-        }
-        .top-desc {
-            color: #888;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-
-        /* 게이지 바 */
-        .gauge { margin-bottom: 6px; display: flex; align-items: center; }
-        .gauge-name {
-            width: 100px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #aaa;
-        }
-        .gauge-bar-bg {
-            flex: 1;
-            height: 8px;
-            background: #222;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 0 8px;
-        }
-        .gauge-bar-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.6s ease;
-        }
-        .gauge-score {
-            width: 36px;
-            text-align: right;
-            font-size: 12px;
-            color: #666;
-        }
-
-        /* 키워드 */
-        .keywords {
-            margin-top: 16px;
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .keyword {
-            background: #222;
-            border-radius: 6px;
-            padding: 4px 10px;
-            font-size: 12px;
-            color: #888;
-        }
-
-        /* 다시하기 */
-        .retry-btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            background: #222;
-            color: #aaa;
-            border: 1px solid #333;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 8px;
-        }
-        .retry-btn:hover { background: #2a2a2a; color: #fff; }
-
-        .footer {
-            color: #333;
-            font-size: 11px;
-            margin-top: 40px;
-        }
+        .footer { text-align: center; color: #333; font-size: 11px; margin-top: 32px; }
     </style>
 </head>
 <body>
+<div class="container">
+    <h1>Font Catcher</h1>
+    <p class="subtitle">이미지에서 폰트를 찾아주는 Chrome 확장 프로그램</p>
 
-<h1>Style Catcher</h1>
-<p class="subtitle">이미지를 올리면 디자인 스타일을 분석해요</p>
-
-<div class="upload-area" id="uploadArea">
-    <div id="uploadContent">
-        <div class="upload-icon">🎨</div>
-        <div class="upload-text"><strong>이미지를 드래그</strong>하거나 클릭해서 업로드</div>
+    <div class="features">
+        <div class="feature"><div class="feature-icon">🔤</div><div class="feature-text">폰트 이름 식별</div></div>
+        <div class="feature"><div class="feature-icon">🎨</div><div class="feature-text">유사 폰트 추천</div></div>
+        <div class="feature"><div class="feature-icon">💡</div><div class="feature-text">용도 추천</div></div>
+        <div class="feature"><div class="feature-icon">🆓</div><div class="feature-text">무료 대안 안내</div></div>
     </div>
+
+    <a class="download-btn" href="https://github.com/eonun197/lens-search/releases/download/v2.0/FontCatcher.zip">
+        다운로드
+    </a>
+
+    <div class="step">
+        <span class="step-num">1</span>
+        <div class="step-title">다운받은 zip 압축 해제</div>
+        <div class="step-desc">더블클릭하면 폴더가 생겨요</div>
+    </div>
+
+    <div class="step">
+        <span class="step-num">2</span>
+        <div class="step-title">Chrome 확장 프로그램 페이지 열기</div>
+        <div class="step-desc">주소창에 복사 붙여넣기:</div>
+        <div class="step-code">chrome://extensions</div>
+        <div class="step-desc">우측 상단 <strong>"개발자 모드"</strong> 켜기</div>
+    </div>
+
+    <div class="step">
+        <span class="step-num">3</span>
+        <div class="step-title">확장 프로그램 설치</div>
+        <div class="step-desc"><strong>"압축해제된 확장 프로그램을 로드합니다"</strong> 클릭 → 압축 해제한 폴더 선택</div>
+    </div>
+
+    <div class="step">
+        <span class="step-num">4</span>
+        <div class="step-title">사용하기</div>
+        <div class="step-desc">Chrome 우측 상단 퍼즐 아이콘 → Font Catcher 핀 고정 → 아이콘 클릭 → 이미지 업로드!</div>
+    </div>
+
+    <div class="footer">Font Catcher · 최정윤 · 국민대 시각디자인</div>
 </div>
-<p class="paste-hint">Cmd+V로 클립보드 이미지 붙여넣기도 가능해요</p>
-<input type="file" id="fileInput" accept="image/*">
-
-<div class="loading" id="loading">
-    <div class="loading-text" id="loadingText">스타일 분석 중...</div>
-    <div class="progress-bar"><div class="progress-fill"></div></div>
-</div>
-
-<div class="results" id="results"></div>
-
-<div class="footer">Style Catcher · 국민대 시각디자인 · 미디어디자인2</div>
-
-<script>
-const GEMINI_KEY = "AIzaSyCACtyiAu-HIfiG34xpbJd4_FXnBDoyihw";
-
-const STYLES = {
-    DREAMCORE: { desc: "몽환적이고 초현실적인 감성", color: "#C8A2C8", keywords: ["몽환", "초현실", "파스텔", "안개", "비현실"] },
-    BITMAP: { desc: "픽셀과 디지털 노스탤지어", color: "#00FF41", keywords: ["픽셀", "도트", "8비트", "디지털", "노이즈"] },
-    MODERNISM: { desc: "기능적이고 구조적인 모던 디자인", color: "#888888", keywords: ["기하학", "그리드", "무채색", "구조", "타이포"] },
-    RETRO: { desc: "따뜻한 색감의 빈티지 감성", color: "#D4A574", keywords: ["따뜻한", "머스타드", "빈티지", "필름", "아날로그"] },
-};
-
-const uploadArea = document.getElementById('uploadArea');
-const fileInput = document.getElementById('fileInput');
-
-// 클릭 업로드
-uploadArea.addEventListener('click', () => fileInput.click());
-fileInput.addEventListener('change', (e) => { if (e.target.files[0]) handleImage(e.target.files[0]); });
-
-// 드래그앤드롭
-uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
-uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) handleImage(file);
-});
-
-// 붙여넣기
-document.addEventListener('paste', (e) => {
-    const items = e.clipboardData.items;
-    for (const item of items) {
-        if (item.type.startsWith('image/')) {
-            handleImage(item.getAsFile());
-            break;
-        }
-    }
-});
-
-let currentImageSrc = null;
-
-function handleImage(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        currentImageSrc = e.target.result;
-        uploadArea.classList.add('has-image');
-        document.getElementById('uploadContent').innerHTML =
-            `<img src="${currentImageSrc}" class="upload-preview">
-             <div class="change-text">클릭하여 이미지 변경</div>`;
-        analyzeStyle(currentImageSrc);
-    };
-    reader.readAsDataURL(file);
-}
-
-async function analyzeStyle(dataUrl) {
-    const loading = document.getElementById('loading');
-    const results = document.getElementById('results');
-    loading.classList.add('visible');
-    results.classList.remove('visible');
-
-    const base64 = dataUrl.split(',')[1];
-    let scores = null;
-
-    // Gemini 시도
-    try {
-        scores = await analyzeWithGemini(base64);
-    } catch (e) {
-        console.warn('Gemini 실패:', e);
-    }
-
-    // 실패 시 로컬 분석
-    if (!scores) {
-        scores = await analyzeLocal(dataUrl);
-    }
-
-    loading.classList.remove('visible');
-    showResults(scores, dataUrl);
-}
-
-async function analyzeWithGemini(base64) {
-    const prompt = `이 이미지의 디자인 스타일을 분석해줘.
-아래 4가지 스타일 각각에 대한 매칭 점수(0~100)를 반드시 모두 알려줘.
-
-1. DREAMCORE — 몽환적이고 초현실적인 감성
-2. BITMAP — 픽셀과 디지털 노스탤지어
-3. MODERNISM — 기능적이고 구조적인 모던 디자인
-4. RETRO — 따뜻한 색감의 빈티지 감성
-
-반드시 아래 형식으로만 답변해:
-DREAMCORE:점수
-BITMAP:점수
-MODERNISM:점수
-RETRO:점수`;
-
-    const resp = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [
-                    { text: prompt },
-                    { inline_data: { mime_type: 'image/png', data: base64 } }
-                ]}],
-                generationConfig: { temperature: 0.2, maxOutputTokens: 200 }
-            })
-        }
-    );
-
-    if (!resp.ok) throw new Error('API error');
-    const data = await resp.json();
-    const text = data.candidates[0].content.parts[0].text;
-
-    const scores = [];
-    for (const line of text.trim().split('\n')) {
-        const [name, val] = line.split(':');
-        if (name && val) {
-            const n = name.trim().toUpperCase();
-            const s = parseInt(val.trim());
-            if (STYLES[n] && !isNaN(s)) scores.push([n, Math.min(100, Math.max(0, s))]);
-        }
-    }
-    if (scores.length < 3) throw new Error('Parse error');
-    scores.sort((a, b) => b[1] - a[1]);
-    return scores;
-}
-
-function analyzeLocal(dataUrl) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-
-    return new Promise((resolve) => {
-        img.onload = () => {
-            canvas.width = 100;
-            canvas.height = 100;
-            ctx.drawImage(img, 0, 0, 100, 100);
-            const data = ctx.getImageData(0, 0, 100, 100).data;
-
-            let totalSat = 0, totalBri = 0, lowSat = 0, highSat = 0;
-            let dark = 0, bright = 0, warm = 0, cool = 0, pastel = 0;
-            const total = 10000;
-
-            for (let i = 0; i < data.length; i += 4) {
-                const r = data[i]/255, g = data[i+1]/255, b = data[i+2]/255;
-                const max = Math.max(r,g,b), min = Math.min(r,g,b);
-                const s = max === 0 ? 0 : (max-min)/max;
-                const v = max;
-                let h = 0;
-                if (max !== min) {
-                    const d = max-min;
-                    if (max===r) h = ((g-b)/d + (g<b?6:0))*60;
-                    else if (max===g) h = ((b-r)/d+2)*60;
-                    else h = ((r-g)/d+4)*60;
-                }
-
-                totalSat += s;
-                totalBri += v;
-                if (s < 0.15) lowSat++;
-                if (s > 0.5) highSat++;
-                if (v < 0.3) dark++;
-                if (v > 0.7) bright++;
-                if (s > 0.1 && (h < 60 || h > 330)) warm++;
-                if (s > 0.1 && h > 180 && h < 300) cool++;
-                if (s > 0.1 && s < 0.45 && v > 0.7) pastel++;
-            }
-
-            const avgSat = totalSat/total;
-            const avgBri = totalBri/total;
-
-            const scores = {};
-            scores.DREAMCORE = (pastel/total)*100 + (cool/total)*30 + (bright/total)*25;
-            scores.BITMAP = (highSat/total)*40 + (1-avgSat)*10 + 20;
-            scores.MODERNISM = (lowSat/total)*80 + (1-avgSat)*40;
-            scores.RETRO = (warm/total)*50 + (1-Math.abs(avgBri-0.5))*30;
-
-            const maxS = Math.max(...Object.values(scores)) || 1;
-            const result = Object.entries(scores)
-                .map(([k,v]) => [k, Math.min(100, Math.round(v/maxS*100))])
-                .sort((a,b) => b[1]-a[1]);
-
-            resolve(result);
-        };
-        img.src = dataUrl;
-    });
-}
-
-function showResults(scores, imageSrc) {
-    const results = document.getElementById('results');
-    const top = scores[0];
-    const topStyle = STYLES[top[0]];
-
-    let gaugesHTML = '';
-    for (const [name, score] of scores) {
-        const s = STYLES[name];
-        gaugesHTML += `
-            <div class="gauge">
-                <div class="gauge-name">${name}</div>
-                <div class="gauge-bar-bg">
-                    <div class="gauge-bar-fill" style="width:${score}%;background:${s.color}"></div>
-                </div>
-                <div class="gauge-score">${score}%</div>
-            </div>`;
-    }
-
-    const keywordsHTML = topStyle.keywords.map(k => `<span class="keyword">#${k}</span>`).join('');
-
-    results.innerHTML = `
-        <div class="result-card">
-            <img src="${imageSrc}" class="result-image">
-            <div class="top-style" style="color:${topStyle.color}">${top[0]}</div>
-            <div class="top-desc">${topStyle.desc}</div>
-            ${gaugesHTML}
-            <div class="keywords">${keywordsHTML}</div>
-        </div>
-        <button class="retry-btn" onclick="location.reload()">다른 이미지 분석하기</button>
-    `;
-    results.classList.add('visible');
-}
-</script>
-
 </body>
 </html>
