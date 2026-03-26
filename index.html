@@ -251,11 +251,11 @@ async function analyzeFont(dataUrl) {
     try {
         const analysis = await callGemini(base64);
         loading.classList.remove('visible');
-        showResults(analysis, dataUrl); // 원본 이미지로 표시
+        showResults(analysis, dataUrl, 'ai');
     } catch (e) {
         const localResult = await analyzeLocal(dataUrl);
         loading.classList.remove('visible');
-        showResults(localResult, dataUrl);
+        showResults(localResult, dataUrl, 'local');
     }
 }
 
@@ -379,7 +379,7 @@ function analyzeLocal(dataUrl) {
     });
 }
 
-function showResults(text, imageSrc) {
+function showResults(text, imageSrc, mode) {
     const results = document.getElementById('results');
     const get = (key) => {
         const regex = new RegExp(key + ':\\s*\\n?(.+)', 'i');
@@ -418,6 +418,9 @@ function showResults(text, imageSrc) {
         ${mood ? `<div class="analysis-card"><div class="analysis-label" style="color:#a78bfa;">✨ 분위기</div><div class="analysis-text">${mood}</div></div>` : ''}
         ${useCase ? `<div class="analysis-card"><div class="analysis-label" style="color:#f472b6;">💡 추천 용도</div><div class="analysis-text">${useCase}</div></div>` : ''}
         ${freeAlt ? `<div class="analysis-card"><div class="analysis-label" style="color:#4ade80;">🆓 무료 대안</div><div class="analysis-text">${freeAlt}</div></div>` : ''}
+        <div style="text-align:center;margin-top:12px;font-size:11px;color:${mode === 'ai' ? '#4ade80' : '#f59e0b'};">
+            ${mode === 'ai' ? '✓ AI 분석 (Gemini)' : '⚡ 로컬 분석 (오프라인)'}
+        </div>
         <button class="retry-btn" id="retryBtn">다른 이미지 분석하기</button>
     `;
     results.classList.add('visible');
