@@ -238,29 +238,99 @@ function preprocessImage(dataUrl) {
     });
 }
 
+let currentDataUrl = null;
+let currentProcessedUrl = null;
+
 async function analyzeFont(dataUrl) {
     const loading = document.getElementById('loading');
     const results = document.getElementById('results');
     loading.classList.add('visible');
     results.classList.remove('visible');
 
-    // 이미지 전처리
-    const processedUrl = await preprocessImage(dataUrl);
-    const base64 = processedUrl.split(',')[1];
+    currentDataUrl = dataUrl;
+    currentProcessedUrl = await preprocessImage(dataUrl);
 
+    // 1단계: OCR로 텍스트 읽기
     try {
-        const analysis = await callGemini(base64);
+        const ocrResult = await ocrWithGemini(currentProcessedUrl.split(',')[1]);
         loading.classList.remove('visible');
-        showResults(analysis, dataUrl, processedUrl, 'ai');
+        showOcrConfirm(ocrResult);
     } catch (e) {
-        const localResult = await analyzeLocal(dataUrl);
+        // OCR 실패 시 바로 폰트 분석
         loading.classList.remove('visible');
-        showResults(localResult, dataUrl, processedUrl, 'local');
+        runFontAnalysis('');
     }
 }
 
-async function callGemini(base64) {
-    const prompt = `너는 20년 경력의 타이포그래피 전문가야. 이 이미지는 폰트 식별을 위해 전처리(이진화, 대비 강화)된 이미지야. 보이는 텍스트의 폰트를 최대한 정확하게 식별해줘.
+async function ocrWithGemini(base64) {
+    const resp = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [
+                    { text: '이 이미지에서 보이는 텍스트를 정확히 읽어줘. 텍스트만 답변해. 다른 말 없이.' },
+                    { inline_data: { mime_type: 'image/png', data: base64 } }
+                ] }],
+                generationConfig: { temperature: 0.1, maxOutputTokens: 200 }
+            })
+        }
+    );
+    if (!resp.ok) throw new Error('OCR 실패');
+    const data = await resp.json();
+    return data.candidates[0].content.parts[0].text.trim();
+}
+
+function showOcrConfirm(detectedText) {
+    const results = document.getElementById('results');
+    results.innerHTML = `
+        <div style="background:#151515;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:16px;">
+            <div style="font-size:13px;color:#888;margin-bottom:8px;">인식된 텍스트</div>
+            <input type="text" id="ocrText" value="${detectedText.replace(/"/g, '&quot;')}"
+                style="width:100%;background:#0f0f0f;border:1px solid #333;border-radius:8px;padding:12px;color:#fff;font-size:18px;outline:none;text-align:center;">
+            <div style="font-size:11px;color:#555;margin-top:8px;">틀리면 수정해주세요</div>
+        </div>
+        <button id="confirmBtn" style="display:block;width:100%;padding:14px;background:#3b82f6;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">
+            이 텍스트로 폰트 찾기
+        </button>
+    `;
+    results.classList.add('visible');
+
+    document.getElementById('confirmBtn').addEventListener('click', () => {
+        const confirmedText = document.getElementById('ocrText').value.trim();
+        results.classList.remove('visible');
+        runFontAnalysis(confirmedText);
+    });
+
+    document.getElementById('ocrText').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('confirmBtn').click();
+    });
+}
+
+async function runFontAnalysis(confirmedText) {
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+    loading.classList.add('visible');
+    results.classList.remove('visible');
+
+    const base64 = currentProcessedUrl.split(',')[1];
+
+    try {
+        const analysis = await callGemini(base64, confirmedText);
+        loading.classList.remove('visible');
+        showResults(analysis, currentDataUrl, currentProcessedUrl, 'ai');
+    } catch (e) {
+        const localResult = await analyzeLocal(currentDataUrl);
+        loading.classList.remove('visible');
+        showResults(localResult, currentDataUrl, currentProcessedUrl, 'local');
+    }
+}
+
+async function callGemini(base64, confirmedText) {
+    const textHint = confirmedText ? `\n\n이 이미지의 텍스트 내용은 "${confirmedText}"야. 텍스트 내용은 이미 확인됐으니 글자 읽기에 시간 쓰지 말고, 폰트의 시각적 형태만 분석해서 정확한 폰트 이름을 찾아줘.` : '';
+
+    const prompt = `너는 20년 경력의 타이포그래피 전문가야. 이 이미지는 폰트 식별을 위해 전처리(이진화, 대비 강화)된 이미지야. 보이는 텍스트의 폰트를 최대한 정확하게 식별해줘.${textHint}
 
 글자의 세부 특징을 꼼꼼히 봐:
 - 세리프 유무와 세리프 형태 (브래킷, 헤어라인, 슬래브 등)
