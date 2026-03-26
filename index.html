@@ -149,18 +149,109 @@ function handleImage(file) {
     reader.readAsDataURL(file);
 }
 
+// ===== 이미지 전처리 (폰트 선명하게) =====
+function preprocessImage(dataUrl) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            // 1. 그레이스케일 변환
+            let totalBri = 0;
+            const grays = [];
+            for (let i = 0; i < data.length; i += 4) {
+                const gray = data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
+                grays.push(gray);
+                totalBri += gray;
+            }
+            const avgBri = totalBri / grays.length;
+
+            // 2. 배경이 어두운지 밝은지 판단 → 반전 필요 여부
+            const needInvert = avgBri < 128;
+
+            // 3. 오츠(Otsu) 이진화 임계값 계산
+            const histogram = new Array(256).fill(0);
+            for (const g of grays) histogram[Math.round(g)]++;
+
+            let total = grays.length;
+            let sum = 0;
+            for (let i = 0; i < 256; i++) sum += i * histogram[i];
+
+            let sumB = 0, wB = 0, wF = 0, maxVariance = 0, threshold = 128;
+            for (let t = 0; t < 256; t++) {
+                wB += histogram[t];
+                if (wB === 0) continue;
+                wF = total - wB;
+                if (wF === 0) break;
+                sumB += t * histogram[t];
+                const mB = sumB / wB;
+                const mF = (sum - sumB) / wF;
+                const variance = wB * wF * (mB - mF) * (mB - mF);
+                if (variance > maxVariance) {
+                    maxVariance = variance;
+                    threshold = t;
+                }
+            }
+
+            // 4. 이진화 + 대비 강화 적용
+            for (let i = 0; i < grays.length; i++) {
+                let val = grays[i];
+
+                // 이진화
+                if (needInvert) {
+                    val = val < threshold ? 255 : 0;
+                } else {
+                    val = val > threshold ? 255 : 0;
+                }
+
+                const pi = i * 4;
+                data[pi] = val;
+                data[pi + 1] = val;
+                data[pi + 2] = val;
+                data[pi + 3] = 255;
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+
+            // 5. 선명화 (unsharp mask 효과)
+            const sharpCanvas = document.createElement('canvas');
+            sharpCanvas.width = canvas.width;
+            sharpCanvas.height = canvas.height;
+            const sharpCtx = sharpCanvas.getContext('2d');
+
+            // 약간 블러된 버전을 빼서 선명하게
+            sharpCtx.drawImage(canvas, 0, 0);
+            sharpCtx.globalCompositeOperation = 'source-over';
+            sharpCtx.filter = 'contrast(1.5)';
+            sharpCtx.drawImage(canvas, 0, 0);
+
+            resolve(sharpCanvas.toDataURL('image/png'));
+        };
+        img.src = dataUrl;
+    });
+}
+
 async function analyzeFont(dataUrl) {
     const loading = document.getElementById('loading');
     const results = document.getElementById('results');
     loading.classList.add('visible');
     results.classList.remove('visible');
 
-    const base64 = dataUrl.split(',')[1];
+    // 이미지 전처리
+    const processedUrl = await preprocessImage(dataUrl);
+    const base64 = processedUrl.split(',')[1];
 
     try {
         const analysis = await callGemini(base64);
         loading.classList.remove('visible');
-        showResults(analysis, dataUrl);
+        showResults(analysis, dataUrl); // 원본 이미지로 표시
     } catch (e) {
         const localResult = await analyzeLocal(dataUrl);
         loading.classList.remove('visible');
@@ -169,7 +260,15 @@ async function analyzeFont(dataUrl) {
 }
 
 async function callGemini(base64) {
-    const prompt = `너는 타이포그래피 전문가야. 이 이미지에서 보이는 텍스트의 폰트를 분석하고 찾아줘.
+    const prompt = `너는 20년 경력의 타이포그래피 전문가야. 이 이미지는 폰트 식별을 위해 전처리(이진화, 대비 강화)된 이미지야. 보이는 텍스트의 폰트를 최대한 정확하게 식별해줘.
+
+글자의 세부 특징을 꼼꼼히 봐:
+- 세리프 유무와 세리프 형태 (브래킷, 헤어라인, 슬래브 등)
+- 획의 굵기 대비 (모노라인 vs 고대비)
+- 둥근 글자(o, e, c)의 형태 (기하학적 원 vs 휴머니스트)
+- 소문자 a, g의 형태 (1층 vs 2층)
+- 터미널(획 끝) 처리 방식
+- 전체적인 프로포션과 x높이
 
 반드시 아래 형식으로만 답변해. 다른 텍스트 없이:
 
