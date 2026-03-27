@@ -21,15 +21,10 @@
         .subtitle { color: #666; font-size: 15px; margin-bottom: 40px; }
 
         .upload-area {
-            width: 100%;
-            max-width: 520px;
-            border: 2px dashed #333;
-            border-radius: 16px;
-            padding: 60px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 16px;
+            width: 100%; max-width: 520px;
+            border: 2px dashed #333; border-radius: 16px;
+            padding: 60px 20px; text-align: center;
+            cursor: pointer; transition: all 0.2s; margin-bottom: 16px;
         }
         .upload-area:hover, .upload-area.dragover { border-color: #3b82f6; background: #111; }
         .upload-area.has-image { padding: 16px; border-style: solid; border-color: #2a2a2a; }
@@ -39,39 +34,66 @@
         .upload-preview { max-width: 100%; max-height: 260px; border-radius: 10px; }
         .change-text { color: #555; font-size: 12px; margin-top: 8px; }
         #fileInput { display: none; }
-        .paste-hint { color: #444; font-size: 12px; margin-bottom: 32px; }
 
-        .loading { display: none; text-align: center; margin-bottom: 32px; }
+        .step-section { display: none; width: 100%; max-width: 520px; margin-top: 20px; }
+        .step-section.visible { display: block; }
+
+        .step-card {
+            background: #151515; border: 1px solid #222;
+            border-radius: 12px; padding: 20px; margin-bottom: 16px;
+        }
+        .step-label { font-size: 13px; color: #888; margin-bottom: 8px; }
+        .step-input {
+            width: 100%; background: #0f0f0f; border: 1px solid #333;
+            border-radius: 8px; padding: 12px; color: #fff;
+            font-size: 18px; outline: none; text-align: center;
+        }
+        .step-input:focus { border-color: #3b82f6; }
+        .step-hint { font-size: 11px; color: #555; margin-top: 6px; }
+
+        .action-btn {
+            display: block; width: 100%; padding: 14px;
+            background: #3b82f6; color: white; border: none;
+            border-radius: 12px; font-size: 15px; font-weight: 700;
+            cursor: pointer; transition: opacity 0.2s;
+        }
+        .action-btn:hover { opacity: 0.85; }
+        .action-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .loading { display: none; text-align: center; margin: 20px 0; }
         .loading.visible { display: block; }
-        .loading-text { color: #3b82f6; font-size: 15px; margin-bottom: 8px; }
+        .loading-text { color: #3b82f6; font-size: 14px; margin-bottom: 8px; }
+        .loading-detail { color: #555; font-size: 12px; margin-bottom: 8px; }
         .progress-bar { width: 320px; height: 4px; background: #1a1a1a; border-radius: 2px; margin: 0 auto; overflow: hidden; }
-        .progress-fill { width: 80px; height: 100%; background: #3b82f6; border-radius: 2px; animation: slide 1s ease-in-out infinite; }
+        .progress-fill-anim { width: 80px; height: 100%; background: #3b82f6; border-radius: 2px; animation: slide 1s ease-in-out infinite; }
+        .progress-fill-real { height: 100%; background: #3b82f6; border-radius: 2px; transition: width 0.3s; }
         @keyframes slide { 0% { transform: translateX(-80px); } 100% { transform: translateX(320px); } }
 
         .results { display: none; width: 100%; max-width: 520px; }
         .results.visible { display: block; }
-        .result-image { width: 100%; border-radius: 12px; margin-bottom: 16px; }
+
+        .result-rank {
+            background: #151515; border: 1px solid #222;
+            border-radius: 12px; padding: 16px; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 16px;
+        }
+        .rank-number { font-size: 24px; font-weight: 800; color: #333; width: 36px; text-align: center; }
+        .rank-number.top { color: #3b82f6; }
+        .rank-info { flex: 1; }
+        .rank-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .rank-sample { font-size: 20px; color: #aaa; margin-bottom: 4px; }
+        .rank-score { font-size: 12px; color: #555; }
+        .rank-bar { width: 100%; height: 4px; background: #222; border-radius: 2px; margin-top: 4px; }
+        .rank-bar-fill { height: 100%; background: #3b82f6; border-radius: 2px; }
 
         .section-title { font-size: 13px; font-weight: 700; color: #555; margin: 18px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
 
         .analysis-card {
-            background: #151515;
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 10px;
+            background: #151515; border: 1px solid #222;
+            border-radius: 12px; padding: 16px; margin-bottom: 10px;
         }
         .analysis-label { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
         .analysis-text { font-size: 14px; color: #aaa; line-height: 1.7; }
-
-        .keywords { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-        .keyword {
-            background: #1a1a1a;
-            border-radius: 6px;
-            padding: 5px 12px;
-            font-size: 13px;
-            color: #888;
-        }
 
         .retry-btn {
             display: block; width: 100%; padding: 14px;
@@ -83,11 +105,10 @@
 
         .footer { color: #333; font-size: 11px; margin-top: 48px; }
 
-        @media (max-width: 500px) {
-            h1 { font-size: 32px; }
-            .upload-area { padding: 40px 16px; }
-        }
+        @media (max-width: 500px) { h1 { font-size: 32px; } }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
 
@@ -100,406 +121,333 @@
         <div class="upload-text"><strong>이미지를 드래그</strong>하거나 클릭해서 업로드</div>
     </div>
 </div>
-<p class="paste-hint">Cmd+V로 스크린샷 붙여넣기도 가능해요</p>
 <input type="file" id="fileInput" accept="image/*">
 
-<div class="loading" id="loading">
-    <div class="loading-text">폰트를 찾는 중...</div>
-    <div class="progress-bar"><div class="progress-fill"></div></div>
+<!-- 텍스트 입력 단계 -->
+<div class="step-section" id="stepSection">
+    <div class="step-card">
+        <div class="step-label">이미지에 적힌 텍스트를 입력해주세요</div>
+        <input type="text" class="step-input" id="textInput" placeholder="예: Hello World">
+        <div class="step-hint">정확하게 입력할수록 폰트를 더 잘 찾아요</div>
+    </div>
+    <button class="action-btn" id="analyzeBtn" disabled>이 텍스트로 폰트 찾기</button>
 </div>
 
+<!-- 로딩 -->
+<div class="loading" id="loading">
+    <div class="loading-text" id="loadingText">폰트를 비교하고 있어요...</div>
+    <div class="loading-detail" id="loadingDetail"></div>
+    <div class="progress-bar"><div class="progress-fill-real" id="progressBar" style="width:0%"></div></div>
+</div>
+
+<!-- 결과 -->
 <div class="results" id="results"></div>
 
 <div class="footer">Font Catcher · 최정윤 · 국민대 시각디자인</div>
 
 <script>
-const GEMINI_KEY = "AIzaSyCACtyiAu-HIfiG34xpbJd4_FXnBDoyihw";
+// ===== Google Fonts 목록 (인기 폰트) =====
+const GOOGLE_FONTS = [
+    // Sans-serif
+    { name: "Inter", category: "산세리프", css: "Inter" },
+    { name: "Roboto", category: "산세리프", css: "Roboto" },
+    { name: "Open Sans", category: "산세리프", css: "Open+Sans" },
+    { name: "Montserrat", category: "산세리프", css: "Montserrat" },
+    { name: "Poppins", category: "산세리프", css: "Poppins" },
+    { name: "Lato", category: "산세리프", css: "Lato" },
+    { name: "Nunito", category: "산세리프", css: "Nunito" },
+    { name: "Nunito Sans", category: "산세리프", css: "Nunito+Sans" },
+    { name: "Raleway", category: "산세리프", css: "Raleway" },
+    { name: "Work Sans", category: "산세리프", css: "Work+Sans" },
+    { name: "Oswald", category: "산세리프", css: "Oswald" },
+    { name: "Quicksand", category: "산세리프", css: "Quicksand" },
+    { name: "Rubik", category: "산세리프", css: "Rubik" },
+    { name: "Kanit", category: "산세리프", css: "Kanit" },
+    { name: "Manrope", category: "산세리프", css: "Manrope" },
+    { name: "DM Sans", category: "산세리프", css: "DM+Sans" },
+    { name: "Jost", category: "산세리프", css: "Jost" },
+    { name: "Outfit", category: "산세리프", css: "Outfit" },
+    { name: "Space Grotesk", category: "산세리프", css: "Space+Grotesk" },
+    { name: "Plus Jakarta Sans", category: "산세리프", css: "Plus+Jakarta+Sans" },
+    { name: "Barlow", category: "산세리프", css: "Barlow" },
+    { name: "Lexend", category: "산세리프", css: "Lexend" },
+    { name: "Figtree", category: "산세리프", css: "Figtree" },
+    { name: "Mulish", category: "산세리프", css: "Mulish" },
+    { name: "Karla", category: "산세리프", css: "Karla" },
+    { name: "Albert Sans", category: "산세리프", css: "Albert+Sans" },
+    { name: "Cabin", category: "산세리프", css: "Cabin" },
+    { name: "Archivo", category: "산세리프", css: "Archivo" },
+    { name: "Red Hat Display", category: "산세리프", css: "Red+Hat+Display" },
+    { name: "Sora", category: "산세리프", css: "Sora" },
 
+    // Serif
+    { name: "Playfair Display", category: "세리프", css: "Playfair+Display" },
+    { name: "Merriweather", category: "세리프", css: "Merriweather" },
+    { name: "Lora", category: "세리프", css: "Lora" },
+    { name: "PT Serif", category: "세리프", css: "PT+Serif" },
+    { name: "Libre Baskerville", category: "세리프", css: "Libre+Baskerville" },
+    { name: "EB Garamond", category: "세리프", css: "EB+Garamond" },
+    { name: "Cormorant Garamond", category: "세리프", css: "Cormorant+Garamond" },
+    { name: "Libre Bodoni", category: "세리프", css: "Libre+Bodoni" },
+    { name: "DM Serif Display", category: "세리프", css: "DM+Serif+Display" },
+    { name: "Crimson Text", category: "세리프", css: "Crimson+Text" },
+    { name: "Source Serif 4", category: "세리프", css: "Source+Serif+4" },
+    { name: "Bitter", category: "세리프", css: "Bitter" },
+    { name: "Josefin Slab", category: "세리프", css: "Josefin+Slab" },
+    { name: "Fraunces", category: "세리프", css: "Fraunces" },
+    { name: "Spectral", category: "세리프", css: "Spectral" },
+
+    // Display
+    { name: "Bebas Neue", category: "디스플레이", css: "Bebas+Neue" },
+    { name: "Righteous", category: "디스플레이", css: "Righteous" },
+    { name: "Fredoka", category: "디스플레이", css: "Fredoka" },
+    { name: "Passion One", category: "디스플레이", css: "Passion+One" },
+    { name: "Abril Fatface", category: "디스플레이", css: "Abril+Fatface" },
+    { name: "Permanent Marker", category: "디스플레이", css: "Permanent+Marker" },
+    { name: "Pacifico", category: "스크립트", css: "Pacifico" },
+    { name: "Satisfy", category: "스크립트", css: "Satisfy" },
+    { name: "Dancing Script", category: "스크립트", css: "Dancing+Script" },
+    { name: "Caveat", category: "스크립트", css: "Caveat" },
+    { name: "Sacramento", category: "스크립트", css: "Sacramento" },
+    { name: "Great Vibes", category: "스크립트", css: "Great+Vibes" },
+
+    // Monospace
+    { name: "Fira Code", category: "모노스페이스", css: "Fira+Code" },
+    { name: "Source Code Pro", category: "모노스페이스", css: "Source+Code+Pro" },
+    { name: "JetBrains Mono", category: "모노스페이스", css: "JetBrains+Mono" },
+    { name: "Space Mono", category: "모노스페이스", css: "Space+Mono" },
+    { name: "IBM Plex Mono", category: "모노스페이스", css: "IBM+Plex+Mono" },
+
+    // Korean
+    { name: "Noto Sans KR", category: "산세리프", css: "Noto+Sans+KR" },
+    { name: "Noto Serif KR", category: "세리프", css: "Noto+Serif+KR" },
+    { name: "Nanum Gothic", category: "산세리프", css: "Nanum+Gothic" },
+    { name: "Nanum Myeongjo", category: "세리프", css: "Nanum+Myeongjo" },
+    { name: "Gothic A1", category: "산세리프", css: "Gothic+A1" },
+    { name: "Do Hyeon", category: "디스플레이", css: "Do+Hyeon" },
+    { name: "Jua", category: "디스플레이", css: "Jua" },
+    { name: "Gamja Flower", category: "디스플레이", css: "Gamja+Flower" },
+    { name: "Gaegu", category: "스크립트", css: "Gaegu" },
+    { name: "Hi Melody", category: "스크립트", css: "Hi+Melody" },
+    { name: "Black Han Sans", category: "디스플레이", css: "Black+Han+Sans" },
+    { name: "Sunflower", category: "산세리프", css: "Sunflower" },
+    { name: "Gowun Dodum", category: "산세리프", css: "Gowun+Dodum" },
+    { name: "Gowun Batang", category: "세리프", css: "Gowun+Batang" },
+    { name: "IBM Plex Sans KR", category: "산세리프", css: "IBM+Plex+Sans+KR" },
+    { name: "Hahmlet", category: "세리프", css: "Hahmlet" },
+];
+
+// ===== 폰트 로드 =====
+let fontsLoaded = false;
+function loadGoogleFonts() {
+    if (fontsLoaded) return Promise.resolve();
+    const families = GOOGLE_FONTS.map(f => f.css + ':wght@400').join('&family=');
+    const link = document.createElement('link');
+    link.href = `https://fonts.googleapis.com/css2?family=${families}&display=swap`;
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    fontsLoaded = true;
+    return new Promise(r => setTimeout(r, 2000)); // 폰트 로드 대기
+}
+
+// ===== UI =====
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
 
 uploadArea.addEventListener('click', () => fileInput.click());
 fileInput.addEventListener('change', (e) => { if (e.target.files[0]) handleImage(e.target.files[0]); });
-
 uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
 uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
 uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
+    e.preventDefault(); uploadArea.classList.remove('dragover');
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) handleImage(file);
 });
-
 document.addEventListener('paste', (e) => {
-    const items = e.clipboardData.items;
-    for (const item of items) {
+    for (const item of e.clipboardData.items) {
         if (item.type.startsWith('image/')) { handleImage(item.getAsFile()); break; }
     }
 });
 
+let uploadedImageSrc = null;
+
 function handleImage(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
-        const src = e.target.result;
+        uploadedImageSrc = e.target.result;
         uploadArea.classList.add('has-image');
         document.getElementById('uploadContent').innerHTML =
-            `<img src="${src}" class="upload-preview"><div class="change-text">클릭하여 변경</div>`;
-        analyzeFont(src);
+            `<img src="${uploadedImageSrc}" class="upload-preview"><div class="change-text">클릭하여 변경</div>`;
+        document.getElementById('stepSection').classList.add('visible');
+        document.getElementById('results').classList.remove('visible');
+        document.getElementById('textInput').focus();
     };
     reader.readAsDataURL(file);
 }
 
-// ===== 이미지 전처리 (폰트 선명하게) =====
-function preprocessImage(dataUrl) {
+// 텍스트 입력 → 버튼 활성화
+document.getElementById('textInput').addEventListener('input', (e) => {
+    document.getElementById('analyzeBtn').disabled = e.target.value.trim().length === 0;
+});
+document.getElementById('textInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.value.trim()) document.getElementById('analyzeBtn').click();
+});
+document.getElementById('analyzeBtn').addEventListener('click', startAnalysis);
+
+// ===== 픽셀 비교 분석 =====
+async function startAnalysis() {
+    const text = document.getElementById('textInput').value.trim();
+    if (!text) return;
+
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+    const stepSection = document.getElementById('stepSection');
+    stepSection.classList.remove('visible');
+    loading.classList.add('visible');
+    results.classList.remove('visible');
+
+    document.getElementById('loadingText').textContent = '폰트를 불러오는 중...';
+    document.getElementById('loadingDetail').textContent = `${GOOGLE_FONTS.length}개 폰트 로딩`;
+    await loadGoogleFonts();
+
+    document.getElementById('loadingText').textContent = '이미지와 비교하는 중...';
+
+    // 원본 이미지에서 텍스트 영역 렌더링
+    const originalPixels = await getImagePixels(uploadedImageSrc);
+
+    // 각 폰트로 렌더링 후 비교
+    const scores = [];
+    const total = GOOGLE_FONTS.length;
+
+    for (let i = 0; i < total; i++) {
+        const font = GOOGLE_FONTS[i];
+        const similarity = compareWithFont(originalPixels, text, font.name);
+        scores.push({ ...font, score: similarity });
+
+        if (i % 10 === 0) {
+            const pct = Math.round((i / total) * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('loadingDetail').textContent = `${i}/${total} 폰트 비교 중...`;
+            await new Promise(r => setTimeout(r, 0)); // UI 업데이트
+        }
+    }
+
+    document.getElementById('progressBar').style.width = '100%';
+
+    scores.sort((a, b) => b.score - a.score);
+    loading.classList.remove('visible');
+    showResults(scores.slice(0, 5), text);
+}
+
+function getImagePixels(dataUrl) {
     return new Promise((resolve) => {
         const img = new Image();
         img.onload = () => {
             const canvas = document.createElement('canvas');
+            const size = 200;
+            canvas.width = size; canvas.height = size;
             const ctx = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
 
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            // 이미지를 정사각형으로 맞춤
+            const scale = Math.min(size / img.width, size / img.height);
+            const w = img.width * scale, h = img.height * scale;
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, size, size);
+            ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+
+            // 이진화
+            const imageData = ctx.getImageData(0, 0, size, size);
             const data = imageData.data;
-
-            // 1. 그레이스케일 변환
-            let totalBri = 0;
-            const grays = [];
             for (let i = 0; i < data.length; i += 4) {
                 const gray = data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
-                grays.push(gray);
-                totalBri += gray;
+                const val = gray > 128 ? 255 : 0;
+                data[i] = data[i+1] = data[i+2] = val;
             }
-            const avgBri = totalBri / grays.length;
-
-            // 2. 배경이 어두운지 밝은지 판단 → 반전 필요 여부
-            const needInvert = avgBri < 128;
-
-            // 3. 오츠(Otsu) 이진화 임계값 계산
-            const histogram = new Array(256).fill(0);
-            for (const g of grays) histogram[Math.round(g)]++;
-
-            let total = grays.length;
-            let sum = 0;
-            for (let i = 0; i < 256; i++) sum += i * histogram[i];
-
-            let sumB = 0, wB = 0, wF = 0, maxVariance = 0, threshold = 128;
-            for (let t = 0; t < 256; t++) {
-                wB += histogram[t];
-                if (wB === 0) continue;
-                wF = total - wB;
-                if (wF === 0) break;
-                sumB += t * histogram[t];
-                const mB = sumB / wB;
-                const mF = (sum - sumB) / wF;
-                const variance = wB * wF * (mB - mF) * (mB - mF);
-                if (variance > maxVariance) {
-                    maxVariance = variance;
-                    threshold = t;
-                }
-            }
-
-            // 4. 이진화 + 대비 강화 적용
-            for (let i = 0; i < grays.length; i++) {
-                let val = grays[i];
-
-                // 이진화
-                if (needInvert) {
-                    val = val < threshold ? 255 : 0;
-                } else {
-                    val = val > threshold ? 255 : 0;
-                }
-
-                const pi = i * 4;
-                data[pi] = val;
-                data[pi + 1] = val;
-                data[pi + 2] = val;
-                data[pi + 3] = 255;
-            }
-
             ctx.putImageData(imageData, 0, 0);
 
-            // 5. 선명화 (unsharp mask 효과)
-            const sharpCanvas = document.createElement('canvas');
-            sharpCanvas.width = canvas.width;
-            sharpCanvas.height = canvas.height;
-            const sharpCtx = sharpCanvas.getContext('2d');
-
-            // 약간 블러된 버전을 빼서 선명하게
-            sharpCtx.drawImage(canvas, 0, 0);
-            sharpCtx.globalCompositeOperation = 'source-over';
-            sharpCtx.filter = 'contrast(1.5)';
-            sharpCtx.drawImage(canvas, 0, 0);
-
-            resolve(sharpCanvas.toDataURL('image/png'));
+            resolve({ canvas, ctx, size });
         };
         img.src = dataUrl;
     });
 }
 
-let currentDataUrl = null;
-let currentProcessedUrl = null;
+function compareWithFont(originalPixels, text, fontName) {
+    const size = originalPixels.size;
+    const canvas = document.createElement('canvas');
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
 
-async function analyzeFont(dataUrl) {
-    const loading = document.getElementById('loading');
-    const results = document.getElementById('results');
-    loading.classList.add('visible');
-    results.classList.remove('visible');
+    // 폰트로 렌더링
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#000';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
 
-    currentDataUrl = dataUrl;
-    currentProcessedUrl = await preprocessImage(dataUrl);
-
-    // 1단계: OCR로 텍스트 읽기
-    try {
-        const ocrResult = await ocrWithGemini(currentProcessedUrl.split(',')[1]);
-        loading.classList.remove('visible');
-        showOcrConfirm(ocrResult);
-    } catch (e) {
-        // OCR 실패 시 바로 폰트 분석
-        loading.classList.remove('visible');
-        runFontAnalysis('');
+    // 텍스트 크기 자동 조절
+    let fontSize = 60;
+    ctx.font = `${fontSize}px "${fontName}"`;
+    let metrics = ctx.measureText(text);
+    while (metrics.width > size * 0.85 && fontSize > 12) {
+        fontSize -= 2;
+        ctx.font = `${fontSize}px "${fontName}"`;
+        metrics = ctx.measureText(text);
     }
-}
 
-async function ocrWithGemini(base64) {
-    const resp = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [
-                    { text: '이 이미지에서 보이는 텍스트를 정확히 읽어줘. 텍스트만 답변해. 다른 말 없이.' },
-                    { inline_data: { mime_type: 'image/png', data: base64 } }
-                ] }],
-                generationConfig: { temperature: 0.1, maxOutputTokens: 200 }
-            })
-        }
-    );
-    if (!resp.ok) throw new Error('OCR 실패');
-    const data = await resp.json();
-    return data.candidates[0].content.parts[0].text.trim();
-}
+    ctx.fillText(text, size / 2, size / 2);
 
-function showOcrConfirm(detectedText) {
-    const results = document.getElementById('results');
-    results.innerHTML = `
-        <div style="background:#151515;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:16px;">
-            <div style="font-size:13px;color:#888;margin-bottom:8px;">인식된 텍스트</div>
-            <input type="text" id="ocrText" value="${detectedText.replace(/"/g, '&quot;')}"
-                style="width:100%;background:#0f0f0f;border:1px solid #333;border-radius:8px;padding:12px;color:#fff;font-size:18px;outline:none;text-align:center;">
-            <div style="font-size:11px;color:#555;margin-top:8px;">틀리면 수정해주세요</div>
-        </div>
-        <button id="confirmBtn" style="display:block;width:100%;padding:14px;background:#3b82f6;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">
-            이 텍스트로 폰트 찾기
-        </button>
-    `;
-    results.classList.add('visible');
-
-    document.getElementById('confirmBtn').addEventListener('click', () => {
-        const confirmedText = document.getElementById('ocrText').value.trim();
-        results.classList.remove('visible');
-        runFontAnalysis(confirmedText);
-    });
-
-    document.getElementById('ocrText').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') document.getElementById('confirmBtn').click();
-    });
-}
-
-async function runFontAnalysis(confirmedText) {
-    const loading = document.getElementById('loading');
-    const results = document.getElementById('results');
-    loading.classList.add('visible');
-    results.classList.remove('visible');
-
-    const base64 = currentProcessedUrl.split(',')[1];
-
-    try {
-        const analysis = await callGemini(base64, confirmedText);
-        loading.classList.remove('visible');
-        showResults(analysis, currentDataUrl, currentProcessedUrl, 'ai');
-    } catch (e) {
-        const localResult = await analyzeLocal(currentDataUrl);
-        loading.classList.remove('visible');
-        showResults(localResult, currentDataUrl, currentProcessedUrl, 'local');
+    // 이진화
+    const imageData = ctx.getImageData(0, 0, size, size);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        const gray = data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
+        data[i] = data[i+1] = data[i+2] = gray > 128 ? 255 : 0;
     }
-}
 
-async function callGemini(base64, confirmedText) {
-    const textHint = confirmedText ? `\n\n이 이미지의 텍스트 내용은 "${confirmedText}"야. 텍스트 내용은 이미 확인됐으니 글자 읽기에 시간 쓰지 말고, 폰트의 시각적 형태만 분석해서 정확한 폰트 이름을 찾아줘.` : '';
+    // 원본과 비교
+    const origData = originalPixels.ctx.getImageData(0, 0, size, size).data;
+    let match = 0, totalPx = 0;
 
-    const prompt = `너는 20년 경력의 타이포그래피 전문가야. 이 이미지는 폰트 식별을 위해 전처리(이진화, 대비 강화)된 이미지야. 보이는 텍스트의 폰트를 최대한 정확하게 식별해줘.${textHint}
-
-글자의 세부 특징을 꼼꼼히 봐:
-- 세리프 유무와 세리프 형태 (브래킷, 헤어라인, 슬래브 등)
-- 획의 굵기 대비 (모노라인 vs 고대비)
-- 둥근 글자(o, e, c)의 형태 (기하학적 원 vs 휴머니스트)
-- 소문자 a, g의 형태 (1층 vs 2층)
-- 터미널(획 끝) 처리 방식
-- 전체적인 프로포션과 x높이
-
-반드시 아래 형식으로만 답변해. 다른 텍스트 없이:
-
-FONT_NAME:
-(가장 유사한 폰트 이름, 확신도가 높은 것)
-
-SIMILAR_FONTS:
-폰트1, 폰트2, 폰트3
-
-CLASSIFICATION:
-(세리프 / 산세리프 / 슬래브세리프 / 스크립트 / 디스플레이 / 모노스페이스 중 하나)
-
-WEIGHT:
-(Thin / Light / Regular / Medium / Bold / Black 중 하나)
-
-FEATURES:
-(이 폰트의 시각적 특징을 한 줄로 — 자간, 둥근 정도, 획의 대비, x높이 등)
-
-MOOD:
-(이 폰트가 주는 분위기를 한 줄로)
-
-USE_CASE:
-(이 폰트가 적합한 사용 상황을 한 줄로 — 제목용, 본문용, 로고용 등)
-
-FREE_ALTERNATIVE:
-(무료로 사용 가능한 대안 폰트 이름과 다운로드 가능한 곳)
-
-텍스트가 보이지 않으면 FONT_NAME에 "텍스트를 찾을 수 없습니다"라고 답변해.`;
-
-    const resp = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: 'image/png', data: base64 } }] }],
-                generationConfig: { temperature: 0.3, maxOutputTokens: 600 }
-            })
+    for (let i = 0; i < data.length; i += 4) {
+        // 검은 픽셀(글자)만 비교
+        if (origData[i] === 0 || data[i] === 0) {
+            totalPx++;
+            if (origData[i] === data[i]) match++;
         }
-    );
-    if (!resp.ok) throw new Error('API 한도 초과');
-    const data = await resp.json();
-    return data.candidates[0].content.parts[0].text;
+    }
+
+    return totalPx > 0 ? (match / totalPx) * 100 : 0;
 }
 
-const FONT_DB = [
-    { name: "Helvetica", classification: "산세리프", weight: "Regular", features: "균일한 획 굵기, 중립적이고 깔끔한 형태, 닫힌 자형", mood: "깔끔하고 모던하며 신뢰감 있는", useCase: "UI, 기업 브랜딩, 본문", free: "Inter (Google Fonts)", serif: false, contrast: "low" },
-    { name: "Futura", classification: "산세리프", weight: "Medium", features: "기하학적 원형 기반, 균일한 획, 높은 x높이", mood: "미래적이고 세련된", useCase: "로고, 제목, 패션 브랜딩", free: "Jost (Google Fonts)", serif: false, contrast: "low" },
-    { name: "Garamond", classification: "세리프", weight: "Regular", features: "가는 세리프, 높은 획 대비, 우아한 곡선", mood: "클래식하고 우아하며 문학적인", useCase: "책 본문, 에디토리얼, 고급 브랜딩", free: "EB Garamond (Google Fonts)", serif: true, contrast: "high" },
-    { name: "Bodoni", classification: "세리프", weight: "Bold", features: "극단적인 획 대비, 가는 헤어라인 세리프, 수직 축", mood: "강렬하고 고급스러우며 패셔너블한", useCase: "패션 잡지 제목, 럭셔리 브랜딩", free: "Libre Bodoni (Google Fonts)", serif: true, contrast: "extreme" },
-    { name: "Gotham", classification: "산세리프", weight: "Bold", features: "기하학적이면서 따뜻한 형태, 넓은 자폭, 높은 x높이", mood: "신뢰감 있고 현대적이며 힘 있는", useCase: "제목, 광고, 정치 캠페인", free: "Nunito Sans (Google Fonts)", serif: false, contrast: "low" },
-    { name: "Baskerville", classification: "세리프", weight: "Regular", features: "날카로운 세리프, 적절한 획 대비, 열린 자형", mood: "격식 있고 지적이며 전통적인", useCase: "학술 문서, 에디토리얼, 본문", free: "Libre Baskerville (Google Fonts)", serif: true, contrast: "medium" },
-    { name: "Avenir", classification: "산세리프", weight: "Regular", features: "기하학적이면서 휴머니스트 특성, 부드러운 곡선", mood: "부드럽고 모던하며 친근한", useCase: "앱 UI, 브랜딩, 제목/본문 겸용", free: "Nunito (Google Fonts)", serif: false, contrast: "low" },
-    { name: "Courier", classification: "모노스페이스", weight: "Regular", features: "고정 너비, 타자기 느낌, 세리프 있음", mood: "레트로하고 기술적이며 코딩 느낌", useCase: "코드, 타자기 감성, 레트로 디자인", free: "Courier Prime (Google Fonts)", serif: true, contrast: "low" },
-    { name: "나눔고딕", classification: "산세리프", weight: "Regular", features: "깔끔한 한글 고딕, 부드러운 곡선, 높은 가독성", mood: "깔끔하고 친근하며 현대적인", useCase: "웹, 앱, 본문, 프레젠테이션", free: "나눔고딕 (Google Fonts)", serif: false, contrast: "low" },
-    { name: "나눔명조", classification: "세리프", weight: "Regular", features: "전통적인 한글 명조, 가로획 가늘고 세로획 굵음", mood: "차분하고 격식 있으며 문학적인", useCase: "본문, 소설, 에디토리얼", free: "나눔명조 (Google Fonts)", serif: true, contrast: "high" },
-    { name: "Pretendard", classification: "산세리프", weight: "Regular", features: "모던한 한글 고딕, 균일한 획, 높은 x높이", mood: "테크니컬하고 깔끔하며 프로페셔널한", useCase: "UI, 웹, 앱, 브랜딩", free: "Pretendard (GitHub)", serif: false, contrast: "low" },
-    { name: "Brush Script", classification: "스크립트", weight: "Regular", features: "손으로 쓴 듯한 흘림체, 기울어진 형태, 연결된 글자", mood: "캐주얼하고 친근하며 자유로운", useCase: "초대장, 카드, 캐주얼 브랜딩", free: "Dancing Script (Google Fonts)", serif: false, contrast: "medium" },
-];
-
-function analyzeLocal(dataUrl) {
-    return new Promise((resolve) => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
-        img.onload = () => {
-            canvas.width = 100; canvas.height = 100;
-            ctx.drawImage(img, 0, 0, 100, 100);
-            const data = ctx.getImageData(0, 0, 100, 100).data;
-
-            let totalBri = 0, darkPx = 0, edgeCount = 0;
-            const total = 10000;
-            for (let i = 0; i < data.length; i += 4) {
-                const bri = (data[i] + data[i+1] + data[i+2]) / 3 / 255;
-                totalBri += bri;
-                if (bri < 0.3) darkPx++;
-            }
-            for (let y = 0; y < 100; y++) {
-                for (let x = 1; x < 99; x++) {
-                    const idx = (y * 100 + x) * 4;
-                    if (Math.abs(data[idx] - data[idx - 4]) > 80) edgeCount++;
-                }
-            }
-
-            const darkRatio = darkPx / total;
-            const edgeRatio = edgeCount / total;
-            const isSerif = edgeRatio > 0.08;
-            const isBold = darkRatio > 0.4;
-            const isLight = darkRatio < 0.15;
-            const isHighContrast = edgeRatio > 0.12;
-
-            let best = FONT_DB[0], bestScore = 0;
-            for (const font of FONT_DB) {
-                let score = 0;
-                if (font.serif === isSerif) score += 30;
-                if (font.contrast === 'high' && isHighContrast) score += 20;
-                if (font.contrast === 'low' && !isHighContrast) score += 20;
-                if (font.weight === 'Bold' && isBold) score += 15;
-                if (font.weight === 'Regular' && !isBold && !isLight) score += 10;
-                score += Math.random() * 10;
-                if (score > bestScore) { bestScore = score; best = font; }
-            }
-
-            const similar = FONT_DB.filter(f => f.name !== best.name && f.serif === best.serif).slice(0, 3).map(f => f.name);
-            resolve(`FONT_NAME:\n${best.name}\nSIMILAR_FONTS:\n${similar.join(', ')}\nCLASSIFICATION:\n${best.classification}\nWEIGHT:\n${best.weight}\nFEATURES:\n${best.features}\nMOOD:\n${best.mood}\nUSE_CASE:\n${best.useCase}\nFREE_ALTERNATIVE:\n${best.free}`);
-        };
-        img.src = dataUrl;
-    });
-}
-
-function showResults(text, imageSrc, processedSrc, mode) {
+function showResults(topFonts, text) {
     const results = document.getElementById('results');
-    const get = (key) => {
-        const regex = new RegExp(key + ':\\s*\\n?(.+)', 'i');
-        const match = text.match(regex);
-        return match ? match[1].trim() : '';
-    };
 
-    const fontName = get('FONT_NAME');
-    const similar = get('SIMILAR_FONTS');
-    const classification = get('CLASSIFICATION');
-    const weight = get('WEIGHT');
-    const features = get('FEATURES');
-    const mood = get('MOOD');
-    const useCase = get('USE_CASE');
-    const freeAlt = get('FREE_ALTERNATIVE');
+    let ranksHtml = '';
+    topFonts.forEach((font, i) => {
+        const isTop = i === 0;
+        ranksHtml += `
+            <div class="result-rank">
+                <div class="rank-number ${isTop ? 'top' : ''}">${i + 1}</div>
+                <div class="rank-info">
+                    <div class="rank-name" style="${isTop ? 'color:#3b82f6;font-size:18px;' : ''}">${font.name}</div>
+                    <div class="rank-sample" style="font-family:'${font.name}',sans-serif;">${text}</div>
+                    <div class="rank-score">유사도 ${font.score.toFixed(1)}% · ${font.category}</div>
+                    <div class="rank-bar"><div class="rank-bar-fill" style="width:${font.score}%;${isTop ? 'background:#3b82f6;' : 'background:#333;'}"></div></div>
+                </div>
+            </div>`;
+    });
 
-    const classColors = {
-        '세리프': '#D4A574', '산세리프': '#888', '슬래브세리프': '#D4A574',
-        '스크립트': '#C8A2C8', '디스플레이': '#FF69B4', '모노스페이스': '#00FF41'
-    };
-    const classColor = classColors[classification] || '#3b82f6';
-
-    const similarHtml = similar ? similar.split(',').map(f =>
-        `<span class="keyword">${f.trim()}</span>`
-    ).join('') : '';
-
+    const topFont = topFonts[0];
     results.innerHTML = `
-        <div style="display:flex;gap:10px;margin-bottom:16px;">
-            <div style="flex:1;text-align:center;">
-                <div style="font-size:10px;color:#555;margin-bottom:4px;">원본</div>
-                <img src="${imageSrc}" style="width:100%;border-radius:8px;border:1px solid #222;">
-            </div>
-            <div style="flex:1;text-align:center;">
-                <div style="font-size:10px;color:#555;margin-bottom:4px;">전처리 결과</div>
-                <img src="${processedSrc}" style="width:100%;border-radius:8px;border:1px solid #222;">
-            </div>
+        <div class="section-title">가장 유사한 폰트</div>
+        ${ranksHtml}
+
+        <div class="analysis-card" style="margin-top:16px;">
+            <div class="analysis-label" style="color:#4ade80;">🆓 모두 무료</div>
+            <div class="analysis-text">위 폰트들은 모두 Google Fonts에서 무료로 다운로드할 수 있어요.<br>
+            <a href="https://fonts.google.com/specimen/${topFont.css}" target="_blank" style="color:#3b82f6;">→ ${topFont.name} 다운로드</a></div>
         </div>
-        <div style="font-size:28px;font-weight:800;color:${classColor}">${fontName}</div>
-        ${classification ? `<div style="display:flex;gap:6px;margin:10px 0;">
-            <span class="keyword" style="background:${classColor}22;color:${classColor}">${classification}</span>
-            ${weight ? `<span class="keyword">${weight}</span>` : ''}
-        </div>` : ''}
-        ${similar ? `<div class="section-title">유사 폰트</div><div class="keywords">${similarHtml}</div>` : ''}
-        ${features ? `<div class="analysis-card"><div class="analysis-label" style="color:#38bdf8;">🔤 폰트 특징</div><div class="analysis-text">${features}</div></div>` : ''}
-        ${mood ? `<div class="analysis-card"><div class="analysis-label" style="color:#a78bfa;">✨ 분위기</div><div class="analysis-text">${mood}</div></div>` : ''}
-        ${useCase ? `<div class="analysis-card"><div class="analysis-label" style="color:#f472b6;">💡 추천 용도</div><div class="analysis-text">${useCase}</div></div>` : ''}
-        ${freeAlt ? `<div class="analysis-card"><div class="analysis-label" style="color:#4ade80;">🆓 무료 대안</div><div class="analysis-text">${freeAlt}</div></div>` : ''}
-        <div style="text-align:center;margin-top:12px;font-size:11px;color:${mode === 'ai' ? '#4ade80' : '#f59e0b'};">
-            ${mode === 'ai' ? '✓ AI 분석 (Gemini)' : '⚡ 로컬 분석 (오프라인)'}
-        </div>
+
         <button class="retry-btn" id="retryBtn">다른 이미지 분석하기</button>
     `;
     results.classList.add('visible');
@@ -509,6 +457,8 @@ function showResults(text, imageSrc, processedSrc, mode) {
         uploadArea.classList.remove('has-image');
         document.getElementById('uploadContent').innerHTML =
             `<div class="upload-icon">🔍</div><div class="upload-text"><strong>이미지를 드래그</strong>하거나 클릭해서 업로드</div>`;
+        document.getElementById('stepSection').classList.remove('visible');
+        document.getElementById('textInput').value = '';
     });
 }
 </script>
