@@ -146,32 +146,35 @@
 <div class="footer">Font Catcher · 최정윤 · 국민대 시각디자인</div>
 
 <script>
-// ===== Google Fonts 전체 목록 (API로 로드) =====
-let GOOGLE_FONTS = [];
-
-const CATEGORY_MAP = {
-    'sans-serif': '산세리프',
-    'serif': '세리프',
-    'display': '디스플레이',
-    'handwriting': '스크립트',
-    'monospace': '모노스페이스'
-};
-
-async function fetchGoogleFontsList() {
-    try {
-        const resp = await fetch('https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyB1IaoTbCq3KK1dJiDvPNKPkN8wetQh8oE&sort=popularity');
-        const data = await resp.json();
-        GOOGLE_FONTS = data.items.map(f => ({
-            name: f.family,
-            category: CATEGORY_MAP[f.category] || f.category,
-            css: f.family.replace(/ /g, '+')
-        }));
-        return GOOGLE_FONTS;
-    } catch (e) {
-        console.warn('Google Fonts API 실패, 기본 목록 사용');
-        return [];
-    }
-}
+// ===== Google Fonts 목록 (인기순 200+) =====
+const GOOGLE_FONTS = [
+"Roboto","Open Sans","Montserrat","Lato","Poppins","Inter","Oswald","Raleway","Nunito","Nunito Sans",
+"Ubuntu","Rubik","Playfair Display","Merriweather","PT Sans","Noto Sans","Roboto Slab","Work Sans","Quicksand","Lora",
+"Barlow","DM Sans","Mulish","Fira Sans","Manrope","Karla","Inconsolata","Josefin Sans","Libre Baskerville","Outfit",
+"Bebas Neue","Cabin","Source Code Pro","Bitter","Arimo","EB Garamond","PT Serif","Abel","Dancing Script","Lobster",
+"Comfortaa","Pacifico","Teko","Signika","Fjalla One","Archivo","Cormorant Garamond","Overpass","Maven Pro","Lexend",
+"Catamaran","Hind","Mukta","Heebo","Exo 2","Asap","Jost","Space Grotesk","Crimson Text","Titillium Web",
+"Varela Round","Libre Franklin","Nanum Gothic","Merriweather Sans","Yanone Kaffeesatz","Arvo","Dosis","Indie Flower",
+"Source Sans 3","Kanit","Barlow Condensed","Plus Jakarta Sans","IBM Plex Sans","Figtree","Sora","Albert Sans",
+"Red Hat Display","Caveat","Permanent Marker","Satisfy","Great Vibes","Sacramento","Righteous","Fredoka",
+"Passion One","Abril Fatface","Shadows Into Light","Amatic SC","Architects Daughter","Patrick Hand",
+"Kalam","Courgette","Playball","Cookie","Yellowtail","Tangerine","Allura","Handlee",
+"Noto Serif","Spectral","Libre Bodoni","DM Serif Display","Fraunces","Josefin Slab",
+"Fira Code","JetBrains Mono","Space Mono","IBM Plex Mono","Courier Prime",
+"Noto Sans KR","Noto Serif KR","Nanum Gothic","Nanum Myeongjo","Gothic A1","Do Hyeon","Jua",
+"Gamja Flower","Gaegu","Hi Melody","Black Han Sans","Sunflower","Gowun Dodum","Gowun Batang",
+"IBM Plex Sans KR","Hahmlet","Nanum Pen Script","Single Day","Dokdo","Poor Story",
+"Song Myung","Stylish","Cute Font","Gugi","Gasoek One","Grandiflora One",
+"Roboto Condensed","Roboto Mono","Open Sans Condensed","Barlow Semi Condensed",
+"PT Sans Narrow","Saira Condensed","Encode Sans Condensed","Pathway Gothic One",
+"Francois One","Russo One","Bungee","Monoton","Press Start 2P","Silkscreen","Pixelify Sans",
+"Playfair Display SC","Cinzel","Bodoni Moda","Cormorant","Sorts Mill Goudy",
+"Cardo","Vollkorn","Gentium Book Plus","Gelasio","Newsreader",
+"Sawarabi Gothic","M PLUS Rounded 1c","Zen Kaku Gothic New","Zen Maru Gothic",
+"Saira","Chakra Petch","Audiowide","Orbitron","Electrolize","Share Tech Mono",
+"Tenor Sans","Chivo","Urbanist","Schibsted Grotesk","Bricolage Grotesque",
+"Geist","Onest","Instrument Sans","General Sans","Satoshi"
+].map(name => ({ name, css: name.replace(/ /g, '+'), category: '' }));
 
 // ===== 폰트 로드 (배치로) =====
 let fontsLoaded = false;
@@ -297,21 +300,7 @@ async function startAnalysis() {
     loading.classList.add('visible');
     results.classList.remove('visible');
 
-    // 폰트 목록 로드
-    if (GOOGLE_FONTS.length === 0) {
-        document.getElementById('loadingText').textContent = 'Google Fonts 목록 가져오는 중...';
-        await fetchGoogleFontsList();
-    }
-
-    // 폰트가 아예 없으면 에러
-    if (GOOGLE_FONTS.length === 0) {
-        loading.classList.remove('visible');
-        results.innerHTML = '<div style="color:#ef4444;text-align:center;padding:20px;">폰트 목록을 가져올 수 없어요. 새로고침해주세요.</div>';
-        results.classList.add('visible');
-        return;
-    }
-
-    const MAX_FONTS = Math.min(GOOGLE_FONTS.length, 1700);
+    const MAX_FONTS = GOOGLE_FONTS.length;
     document.getElementById('loadingText').textContent = '폰트를 불러오는 중...';
     document.getElementById('loadingDetail').textContent = `${MAX_FONTS}개 폰트 로딩`;
     await loadGoogleFonts(MAX_FONTS, (loaded, total) => {
