@@ -123,12 +123,12 @@
 </div>
 <input type="file" id="fileInput" accept="image/*">
 
-<!-- 텍스트 입력 단계 -->
+<!-- OCR 확인 + 텍스트 입력 단계 -->
 <div class="step-section" id="stepSection">
     <div class="step-card">
-        <div class="step-label">이미지에 적힌 텍스트를 입력해주세요</div>
+        <div class="step-label" id="stepLabel">텍스트를 인식하고 있어요...</div>
         <input type="text" class="step-input" id="textInput" placeholder="예: Hello World">
-        <div class="step-hint">정확하게 입력할수록 폰트를 더 잘 찾아요</div>
+        <div class="step-hint" id="stepHint">틀리면 수정해주세요</div>
     </div>
     <button class="action-btn" id="analyzeBtn" disabled>이 텍스트로 폰트 찾기</button>
 </div>
@@ -218,16 +218,60 @@ document.addEventListener('paste', (e) => {
 
 let uploadedImageSrc = null;
 
+const GEMINI_KEY = "AIzaSyAQ0EnVo_Cdnq7VXFsSsAgNRwtJlQEc8uk";
+
 function handleImage(file) {
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
         uploadedImageSrc = e.target.result;
         uploadArea.classList.add('has-image');
         document.getElementById('uploadContent').innerHTML =
             `<img src="${uploadedImageSrc}" class="upload-preview"><div class="change-text">클릭하여 변경</div>`;
-        document.getElementById('stepSection').classList.add('visible');
         document.getElementById('results').classList.remove('visible');
-        document.getElementById('textInput').focus();
+
+        // OCR 시도
+        const stepSection = document.getElementById('stepSection');
+        const stepLabel = document.getElementById('stepLabel');
+        const stepHint = document.getElementById('stepHint');
+        const textInput = document.getElementById('textInput');
+
+        stepSection.classList.add('visible');
+        stepLabel.textContent = '텍스트를 인식하고 있어요...';
+        stepHint.textContent = '';
+        textInput.value = '';
+        textInput.disabled = true;
+        document.getElementById('analyzeBtn').disabled = true;
+
+        try {
+            const base64 = uploadedImageSrc.split(',')[1];
+            const resp = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [
+                            { text: '이 이미지에서 보이는 텍스트를 정확히 읽어줘. 텍스트만 답변해. 다른 말 없이.' },
+                            { inline_data: { mime_type: 'image/png', data: base64 } }
+                        ] }],
+                        generationConfig: { temperature: 0.1, maxOutputTokens: 200 }
+                    })
+                }
+            );
+            if (!resp.ok) throw new Error('OCR 실패');
+            const data = await resp.json();
+            const detected = data.candidates[0].content.parts[0].text.trim();
+            textInput.value = detected;
+            stepLabel.textContent = '이 텍스트가 맞나요?';
+            stepHint.textContent = '틀리면 수정해주세요';
+        } catch (e) {
+            stepLabel.textContent = '이미지에 적힌 텍스트를 입력해주세요';
+            stepHint.textContent = 'AI 인식에 실패했어요. 직접 입력해주세요.';
+        }
+
+        textInput.disabled = false;
+        textInput.focus();
+        document.getElementById('analyzeBtn').disabled = textInput.value.trim().length === 0;
     };
     reader.readAsDataURL(file);
 }
@@ -257,6 +301,14 @@ async function startAnalysis() {
     if (GOOGLE_FONTS.length === 0) {
         document.getElementById('loadingText').textContent = 'Google Fonts 목록 가져오는 중...';
         await fetchGoogleFontsList();
+    }
+
+    // 폰트가 아예 없으면 에러
+    if (GOOGLE_FONTS.length === 0) {
+        loading.classList.remove('visible');
+        results.innerHTML = '<div style="color:#ef4444;text-align:center;padding:20px;">폰트 목록을 가져올 수 없어요. 새로고침해주세요.</div>';
+        results.classList.add('visible');
+        return;
     }
 
     const MAX_FONTS = Math.min(GOOGLE_FONTS.length, 1700);
