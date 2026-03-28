@@ -146,108 +146,55 @@
 <div class="footer">Font Catcher · 최정윤 · 국민대 시각디자인</div>
 
 <script>
-// ===== Google Fonts 목록 (인기 폰트) =====
-const GOOGLE_FONTS = [
-    // Sans-serif
-    { name: "Inter", category: "산세리프", css: "Inter" },
-    { name: "Roboto", category: "산세리프", css: "Roboto" },
-    { name: "Open Sans", category: "산세리프", css: "Open+Sans" },
-    { name: "Montserrat", category: "산세리프", css: "Montserrat" },
-    { name: "Poppins", category: "산세리프", css: "Poppins" },
-    { name: "Lato", category: "산세리프", css: "Lato" },
-    { name: "Nunito", category: "산세리프", css: "Nunito" },
-    { name: "Nunito Sans", category: "산세리프", css: "Nunito+Sans" },
-    { name: "Raleway", category: "산세리프", css: "Raleway" },
-    { name: "Work Sans", category: "산세리프", css: "Work+Sans" },
-    { name: "Oswald", category: "산세리프", css: "Oswald" },
-    { name: "Quicksand", category: "산세리프", css: "Quicksand" },
-    { name: "Rubik", category: "산세리프", css: "Rubik" },
-    { name: "Kanit", category: "산세리프", css: "Kanit" },
-    { name: "Manrope", category: "산세리프", css: "Manrope" },
-    { name: "DM Sans", category: "산세리프", css: "DM+Sans" },
-    { name: "Jost", category: "산세리프", css: "Jost" },
-    { name: "Outfit", category: "산세리프", css: "Outfit" },
-    { name: "Space Grotesk", category: "산세리프", css: "Space+Grotesk" },
-    { name: "Plus Jakarta Sans", category: "산세리프", css: "Plus+Jakarta+Sans" },
-    { name: "Barlow", category: "산세리프", css: "Barlow" },
-    { name: "Lexend", category: "산세리프", css: "Lexend" },
-    { name: "Figtree", category: "산세리프", css: "Figtree" },
-    { name: "Mulish", category: "산세리프", css: "Mulish" },
-    { name: "Karla", category: "산세리프", css: "Karla" },
-    { name: "Albert Sans", category: "산세리프", css: "Albert+Sans" },
-    { name: "Cabin", category: "산세리프", css: "Cabin" },
-    { name: "Archivo", category: "산세리프", css: "Archivo" },
-    { name: "Red Hat Display", category: "산세리프", css: "Red+Hat+Display" },
-    { name: "Sora", category: "산세리프", css: "Sora" },
+// ===== Google Fonts 전체 목록 (API로 로드) =====
+let GOOGLE_FONTS = [];
 
-    // Serif
-    { name: "Playfair Display", category: "세리프", css: "Playfair+Display" },
-    { name: "Merriweather", category: "세리프", css: "Merriweather" },
-    { name: "Lora", category: "세리프", css: "Lora" },
-    { name: "PT Serif", category: "세리프", css: "PT+Serif" },
-    { name: "Libre Baskerville", category: "세리프", css: "Libre+Baskerville" },
-    { name: "EB Garamond", category: "세리프", css: "EB+Garamond" },
-    { name: "Cormorant Garamond", category: "세리프", css: "Cormorant+Garamond" },
-    { name: "Libre Bodoni", category: "세리프", css: "Libre+Bodoni" },
-    { name: "DM Serif Display", category: "세리프", css: "DM+Serif+Display" },
-    { name: "Crimson Text", category: "세리프", css: "Crimson+Text" },
-    { name: "Source Serif 4", category: "세리프", css: "Source+Serif+4" },
-    { name: "Bitter", category: "세리프", css: "Bitter" },
-    { name: "Josefin Slab", category: "세리프", css: "Josefin+Slab" },
-    { name: "Fraunces", category: "세리프", css: "Fraunces" },
-    { name: "Spectral", category: "세리프", css: "Spectral" },
+const CATEGORY_MAP = {
+    'sans-serif': '산세리프',
+    'serif': '세리프',
+    'display': '디스플레이',
+    'handwriting': '스크립트',
+    'monospace': '모노스페이스'
+};
 
-    // Display
-    { name: "Bebas Neue", category: "디스플레이", css: "Bebas+Neue" },
-    { name: "Righteous", category: "디스플레이", css: "Righteous" },
-    { name: "Fredoka", category: "디스플레이", css: "Fredoka" },
-    { name: "Passion One", category: "디스플레이", css: "Passion+One" },
-    { name: "Abril Fatface", category: "디스플레이", css: "Abril+Fatface" },
-    { name: "Permanent Marker", category: "디스플레이", css: "Permanent+Marker" },
-    { name: "Pacifico", category: "스크립트", css: "Pacifico" },
-    { name: "Satisfy", category: "스크립트", css: "Satisfy" },
-    { name: "Dancing Script", category: "스크립트", css: "Dancing+Script" },
-    { name: "Caveat", category: "스크립트", css: "Caveat" },
-    { name: "Sacramento", category: "스크립트", css: "Sacramento" },
-    { name: "Great Vibes", category: "스크립트", css: "Great+Vibes" },
+async function fetchGoogleFontsList() {
+    try {
+        const resp = await fetch('https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyB1IaoTbCq3KK1dJiDvPNKPkN8wetQh8oE&sort=popularity');
+        const data = await resp.json();
+        GOOGLE_FONTS = data.items.map(f => ({
+            name: f.family,
+            category: CATEGORY_MAP[f.category] || f.category,
+            css: f.family.replace(/ /g, '+')
+        }));
+        return GOOGLE_FONTS;
+    } catch (e) {
+        console.warn('Google Fonts API 실패, 기본 목록 사용');
+        return [];
+    }
+}
 
-    // Monospace
-    { name: "Fira Code", category: "모노스페이스", css: "Fira+Code" },
-    { name: "Source Code Pro", category: "모노스페이스", css: "Source+Code+Pro" },
-    { name: "JetBrains Mono", category: "모노스페이스", css: "JetBrains+Mono" },
-    { name: "Space Mono", category: "모노스페이스", css: "Space+Mono" },
-    { name: "IBM Plex Mono", category: "모노스페이스", css: "IBM+Plex+Mono" },
-
-    // Korean
-    { name: "Noto Sans KR", category: "산세리프", css: "Noto+Sans+KR" },
-    { name: "Noto Serif KR", category: "세리프", css: "Noto+Serif+KR" },
-    { name: "Nanum Gothic", category: "산세리프", css: "Nanum+Gothic" },
-    { name: "Nanum Myeongjo", category: "세리프", css: "Nanum+Myeongjo" },
-    { name: "Gothic A1", category: "산세리프", css: "Gothic+A1" },
-    { name: "Do Hyeon", category: "디스플레이", css: "Do+Hyeon" },
-    { name: "Jua", category: "디스플레이", css: "Jua" },
-    { name: "Gamja Flower", category: "디스플레이", css: "Gamja+Flower" },
-    { name: "Gaegu", category: "스크립트", css: "Gaegu" },
-    { name: "Hi Melody", category: "스크립트", css: "Hi+Melody" },
-    { name: "Black Han Sans", category: "디스플레이", css: "Black+Han+Sans" },
-    { name: "Sunflower", category: "산세리프", css: "Sunflower" },
-    { name: "Gowun Dodum", category: "산세리프", css: "Gowun+Dodum" },
-    { name: "Gowun Batang", category: "세리프", css: "Gowun+Batang" },
-    { name: "IBM Plex Sans KR", category: "산세리프", css: "IBM+Plex+Sans+KR" },
-    { name: "Hahmlet", category: "세리프", css: "Hahmlet" },
-];
-
-// ===== 폰트 로드 =====
+// ===== 폰트 로드 (배치로) =====
 let fontsLoaded = false;
-function loadGoogleFonts() {
-    if (fontsLoaded) return Promise.resolve();
-    const families = GOOGLE_FONTS.map(f => f.css + ':wght@400').join('&family=');
-    const link = document.createElement('link');
-    link.href = `https://fonts.googleapis.com/css2?family=${families}&display=swap`;
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
+async function loadGoogleFonts(maxFonts, onProgress) {
+    if (fontsLoaded) return;
+
+    const fonts = GOOGLE_FONTS.slice(0, maxFonts);
+    const BATCH = 50;
+
+    for (let i = 0; i < fonts.length; i += BATCH) {
+        const batch = fonts.slice(i, i + BATCH);
+        const families = batch.map(f => f.css + ':wght@400').join('&family=');
+        const link = document.createElement('link');
+        link.href = `https://fonts.googleapis.com/css2?family=${families}&display=swap`;
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+
+        if (onProgress) onProgress(Math.min(i + BATCH, fonts.length), fonts.length);
+        await new Promise(r => setTimeout(r, 300));
+    }
+
+    await new Promise(r => setTimeout(r, 1500)); // 마지막 배치 로드 대기
     fontsLoaded = true;
-    return new Promise(r => setTimeout(r, 2000)); // 폰트 로드 대기
 }
 
 // ===== UI =====
@@ -306,9 +253,19 @@ async function startAnalysis() {
     loading.classList.add('visible');
     results.classList.remove('visible');
 
+    // 폰트 목록 로드
+    if (GOOGLE_FONTS.length === 0) {
+        document.getElementById('loadingText').textContent = 'Google Fonts 목록 가져오는 중...';
+        await fetchGoogleFontsList();
+    }
+
+    const MAX_FONTS = Math.min(GOOGLE_FONTS.length, 1700);
     document.getElementById('loadingText').textContent = '폰트를 불러오는 중...';
-    document.getElementById('loadingDetail').textContent = `${GOOGLE_FONTS.length}개 폰트 로딩`;
-    await loadGoogleFonts();
+    document.getElementById('loadingDetail').textContent = `${MAX_FONTS}개 폰트 로딩`;
+    await loadGoogleFonts(MAX_FONTS, (loaded, total) => {
+        document.getElementById('loadingDetail').textContent = `${loaded}/${total}개 폰트 로딩`;
+        document.getElementById('progressBar').style.width = (loaded / total * 30) + '%';
+    });
 
     document.getElementById('loadingText').textContent = '이미지와 비교하는 중...';
 
@@ -317,15 +274,16 @@ async function startAnalysis() {
 
     // 각 폰트로 렌더링 후 비교
     const scores = [];
-    const total = GOOGLE_FONTS.length;
+    const fontsToCompare = GOOGLE_FONTS.slice(0, MAX_FONTS);
+    const total = fontsToCompare.length;
 
     for (let i = 0; i < total; i++) {
-        const font = GOOGLE_FONTS[i];
+        const font = fontsToCompare[i];
         const similarity = compareWithFont(originalPixels, text, font.name);
         scores.push({ ...font, score: similarity });
 
-        if (i % 10 === 0) {
-            const pct = Math.round((i / total) * 100);
+        if (i % 20 === 0) {
+            const pct = 30 + Math.round((i / total) * 70);
             document.getElementById('progressBar').style.width = pct + '%';
             document.getElementById('loadingDetail').textContent = `${i}/${total} 폰트 비교 중...`;
             await new Promise(r => setTimeout(r, 0)); // UI 업데이트
@@ -336,7 +294,7 @@ async function startAnalysis() {
 
     scores.sort((a, b) => b.score - a.score);
     loading.classList.remove('visible');
-    showResults(scores.slice(0, 5), text);
+    showResults(scores.slice(0, 5), text, total);
 }
 
 function getImagePixels(dataUrl) {
@@ -419,7 +377,7 @@ function compareWithFont(originalPixels, text, fontName) {
     return totalPx > 0 ? (match / totalPx) * 100 : 0;
 }
 
-function showResults(topFonts, text) {
+function showResults(topFonts, text, total) {
     const results = document.getElementById('results');
 
     let ranksHtml = '';
@@ -438,8 +396,25 @@ function showResults(topFonts, text) {
     });
 
     const topFont = topFonts[0];
+    const topScore = topFont.score;
+    let matchMsg, matchColor;
+    if (topScore >= 95) {
+        matchMsg = "✅ 정확히 이 폰트일 가능성이 높아요";
+        matchColor = "#4ade80";
+    } else if (topScore >= 70) {
+        matchMsg = "🔎 비슷한 폰트예요 (유료 폰트일 수 있어요)";
+        matchColor = "#f59e0b";
+    } else {
+        matchMsg = "💡 참고용이에요 (정확한 폰트는 아닐 수 있어요)";
+        matchColor = "#ef4444";
+    }
+
     results.innerHTML = `
-        <div class="section-title">가장 유사한 폰트</div>
+        <div style="background:${matchColor}15;border:1px solid ${matchColor}33;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:center;">
+            <div style="font-size:14px;color:${matchColor};font-weight:600;">${matchMsg}</div>
+        </div>
+
+        <div class="section-title">가장 유사한 폰트 (${total}개 비교)</div>
         ${ranksHtml}
 
         <div class="analysis-card" style="margin-top:16px;">
