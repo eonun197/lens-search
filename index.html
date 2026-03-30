@@ -633,11 +633,18 @@ function showResults(text, inputText, mode) {
     const useCase = get('USE_CASE');
     const pairWith = get('PAIR_WITH');
 
+    // 파싱 실패 시 원본 응답 표시
+    const parseFailed = !fontName;
+
     const classColors = {
-        '세리프': '#D4A574', '산세리프': '#888', '슬래브세리프': '#D4A574',
-        '스크립트': '#C8A2C8', '디스플레이': '#FF69B4', '모노스페이스': '#00FF41'
+        '세리프': '#D4A574', 'serif': '#D4A574',
+        '산세리프': '#888', 'sans-serif': '#888',
+        '슬래브세리프': '#D4A574',
+        '스크립트': '#C8A2C8', 'script': '#C8A2C8',
+        '디스플레이': '#FF69B4', 'display': '#FF69B4',
+        '모노스페이스': '#00FF41', 'monospace': '#00FF41'
     };
-    const classColor = classColors[classification] || '#3b82f6';
+    const classColor = classColors[(classification||'').toLowerCase()] || '#3b82f6';
 
     const similarHtml = similar ? similar.split(',').map(f =>
         `<span style="background:#f0f0f0;border-radius:6px;padding:5px 12px;font-size:13px;color:#666;display:inline-block;margin:2px;">${f.trim()}</span>`
@@ -659,12 +666,19 @@ function showResults(text, inputText, mode) {
             <div style="font-size:11px;color:#999;">전처리 과정: 이미지를 이진화하고 대비를 강화하여 글자 형태를 선명하게 한 뒤 AI가 분석했어요.</div>
         </div>
 
-        <div style="font-size:28px;font-weight:800;color:${classColor}">${fontName}</div>
+        ${parseFailed ? `
+            <div class="analysis-card">
+                <div class="analysis-label" style="color:#3b82f6;">🤖 AI 분석 결과</div>
+                <div class="analysis-text" style="white-space:pre-line;">${text}</div>
+            </div>
+        ` : `
+            <div style="font-size:28px;font-weight:800;color:${classColor}">${fontName}</div>
 
-        ${classification ? `<div style="display:flex;gap:6px;margin:10px 0;">
-            <span style="background:${classColor}22;color:${classColor};border-radius:6px;padding:5px 12px;font-size:13px;">${classification}</span>
-            ${weight ? `<span style="background:#f0f0f0;border-radius:6px;padding:5px 12px;font-size:13px;color:#666;">${weight}</span>` : ''}
-        </div>` : ''}
+            ${classification ? `<div style="display:flex;gap:6px;margin:10px 0;">
+                <span style="background:${classColor}22;color:${classColor};border-radius:6px;padding:5px 12px;font-size:13px;">${classification}</span>
+                ${weight ? `<span style="background:#f0f0f0;border-radius:6px;padding:5px 12px;font-size:13px;color:#666;">${weight}</span>` : ''}
+            </div>` : ''}
+        `}
 
         ${similar ? `<div class="section-title">유사 폰트</div><div>${similarHtml}</div>` : ''}
 
