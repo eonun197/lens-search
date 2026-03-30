@@ -107,6 +107,25 @@
 
         .section-title { font-size: 14px; font-weight: 700; color: #444; margin: 20px 0 12px; letter-spacing: 0.5px; }
 
+        .accordion {
+            background: #fff; border: 1px solid #e0e0e0;
+            border-radius: 12px; margin-bottom: 10px; overflow: hidden;
+        }
+        .accordion-header {
+            padding: 14px 18px; cursor: pointer; display: flex;
+            justify-content: space-between; align-items: center;
+            user-select: none; transition: background 0.2s;
+        }
+        .accordion-header:hover { background: #fafafa; }
+        .accordion-label { font-size: 14px; font-weight: 700; }
+        .accordion-arrow { font-size: 12px; color: #999; transition: transform 0.2s; }
+        .accordion.open .accordion-arrow { transform: rotate(180deg); }
+        .accordion-body {
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+            padding: 0 18px;
+        }
+        .accordion.open .accordion-body { max-height: 300px; padding: 0 18px 14px; }
+        .accordion-text { font-size: 15px; color: #555; line-height: 1.8; }
         .analysis-card {
             background: #fff; border: 1px solid #e0e0e0;
             border-radius: 12px; padding: 18px; margin-bottom: 12px;
@@ -674,16 +693,27 @@ function showResults(text, inputText, mode) {
             </div>` : ''}
         `}
 
-        ${features ? `<div class="analysis-card"><div class="analysis-label" style="color:#38bdf8;">🔤 폰트 특징</div><div class="analysis-text">${features}</div></div>` : ''}
-        ${mood ? `<div class="analysis-card"><div class="analysis-label" style="color:#a78bfa;">✨ 분위기</div><div class="analysis-text">${mood}</div></div>` : ''}
-        ${useCase ? `<div class="analysis-card"><div class="analysis-label" style="color:#f472b6;">💡 추천 용도</div><div class="analysis-text">${useCase}</div></div>` : ''}
+        ${features ? `<div class="accordion open" onclick="this.classList.toggle('open')">
+            <div class="accordion-header"><span class="accordion-label" style="color:#38bdf8;">🔤 폰트 특징</span><span class="accordion-arrow">▼</span></div>
+            <div class="accordion-body"><div class="accordion-text">${features}</div></div>
+        </div>` : ''}
+        ${mood ? `<div class="accordion" onclick="this.classList.toggle('open')">
+            <div class="accordion-header"><span class="accordion-label" style="color:#a78bfa;">✨ 분위기</span><span class="accordion-arrow">▼</span></div>
+            <div class="accordion-body"><div class="accordion-text">${mood}</div></div>
+        </div>` : ''}
+        ${useCase ? `<div class="accordion" onclick="this.classList.toggle('open')">
+            <div class="accordion-header"><span class="accordion-label" style="color:#f472b6;">💡 추천 용도</span><span class="accordion-arrow">▼</span></div>
+            <div class="accordion-body"><div class="accordion-text">${useCase}</div></div>
+        </div>` : ''}
 
         <button class="retry-btn" id="retryBtn" style="background:#3b82f6;color:#fff;font-size:16px;border:none;">다른 이미지 분석하기</button>
 
         <div style="margin-top:32px;"></div>
 
-        <div class="section-title">연관 서비스</div>
-        <div style="font-size:12px;color:#999;margin-bottom:8px;">이미지를 업로드하면 폰트를 찾아주는 서비스들이에요</div>
+        <div class="accordion" onclick="this.classList.toggle('open')">
+            <div class="accordion-header"><span class="accordion-label" style="color:#333;">🔗 연관 서비스</span><span class="accordion-arrow">▼</span></div>
+            <div class="accordion-body">
+                <div style="font-size:12px;color:#999;margin-bottom:8px;">이미지를 업로드하면 폰트를 찾아주는 서비스들이에요</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <a href="https://www.myfonts.com/pages/whatthefont" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
                 🔤 WhatTheFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 정확도 높음</span>
@@ -701,10 +731,12 @@ function showResults(text, inputText, mode) {
                 🇰🇷 산돌구름<br><span style="font-size:10px;color:#999;font-weight:400;">한글 전문 · 이미지 검색</span>
             </a>
         </div>
+            </div>
+        </div>
 
-        <div class="analysis-card" style="margin-top:14px;">
-            <div class="analysis-label" style="color:#3b82f6;">🔍 비슷한 느낌의 폰트 찾아보기</div>
-            <div class="analysis-text">${getBrowseSuggestion(fontName, classification, inputText)}</div>
+        <div class="accordion" onclick="this.classList.toggle('open')">
+            <div class="accordion-header"><span class="accordion-label" style="color:#333;">🔍 비슷한 느낌의 폰트 찾아보기</span><span class="accordion-arrow">▼</span></div>
+            <div class="accordion-body"><div class="accordion-text">${getBrowseSuggestion(fontName, classification, inputText)}</div></div>
         </div>
 
     `;
