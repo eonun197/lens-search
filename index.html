@@ -459,9 +459,9 @@ SIMILAR_FONTS: font1, font2, font3
 CLASSIFICATION: (serif/sans-serif/script/display/monospace)
 WEIGHT: (Thin/Light/Regular/Medium/Bold/Black)
 FEATURES: (visual characteristics in one line)
-MOOD: (mood/feeling in one line)
-USE_CASE: (recommended usage in one line)
-FREE_ALTERNATIVE: (free alternative font and where to download)`;
+MOOD: (describe the emotional impression: warm/cold, modern/classic, playful/serious, luxury/casual etc.)
+USE_CASE: (specific real-world examples: poster title, app UI, book body text, cafe menu, fashion magazine, business card etc.)
+PAIR_WITH: (1-2 fonts that pair well with this font for heading+body combination)`;
 
     const resp = await fetch('https://font-catcher.eonun197.workers.dev/', {
         method: 'POST',
@@ -644,7 +644,7 @@ function showResults(text, inputText, mode) {
     const features = get('FEATURES');
     const mood = get('MOOD');
     const useCase = get('USE_CASE');
-    const freeAlt = get('FREE_ALTERNATIVE');
+    const pairWith = get('PAIR_WITH');
 
     const classColors = {
         '세리프': '#D4A574', '산세리프': '#888', '슬래브세리프': '#D4A574',
@@ -684,26 +684,26 @@ function showResults(text, inputText, mode) {
         ${features ? `<div class="analysis-card"><div class="analysis-label" style="color:#38bdf8;">🔤 폰트 특징</div><div class="analysis-text">${features}</div></div>` : ''}
         ${mood ? `<div class="analysis-card"><div class="analysis-label" style="color:#a78bfa;">✨ 분위기</div><div class="analysis-text">${mood}</div></div>` : ''}
         ${useCase ? `<div class="analysis-card"><div class="analysis-label" style="color:#f472b6;">💡 추천 용도</div><div class="analysis-text">${useCase}</div></div>` : ''}
-        ${freeAlt ? `<div class="analysis-card"><div class="analysis-label" style="color:#4ade80;">🆓 무료 대안</div><div class="analysis-text">${freeAlt}</div></div>` : ''}
+        ${pairWith ? `<div class="analysis-card"><div class="analysis-label" style="color:#4ade80;">🔗 페어링 추천</div><div class="analysis-text">${pairWith}</div></div>` : ''}
 
         <div style="text-align:center;margin-top:12px;font-size:11px;color:#4ade80;">✓ AI 분석 (Cloudflare Workers AI)</div>
 
-        <div class="section-title">다른 서비스와 비교해보기</div>
+        <div class="section-title">연관 서비스</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <a href="https://www.myfonts.com/pages/whatthefont" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🔤 WhatTheFont
+            <a href="https://www.myfonts.com/pages/whatthefont" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
+                🔤 WhatTheFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
             </a>
-            <a href="https://www.fontsquirrel.com/matcherator" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🐿 Font Squirrel
+            <a href="https://www.fontsquirrel.com/matcherator" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
+                🐿 Font Squirrel<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
             </a>
-            <a href="https://www.whatfontis.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🔎 WhatFontIs
+            <a href="https://www.whatfontis.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
+                🔎 WhatFontIs<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
             </a>
-            <a href="https://fonts.adobe.com/fonts" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🅰 Adobe Fonts
+            <a href="https://fonts.adobe.com/fonts" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
+                🅰 Adobe Fonts<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 한글 일부</span>
             </a>
-            <a href="https://www.sandollcloud.com/font-finder-image" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🇰🇷 산돌구름
+            <a href="https://www.sandollcloud.com/font-finder-image" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
+                🇰🇷 산돌구름<br><span style="font-size:10px;color:#999;font-weight:400;">한글 전문</span>
             </a>
         </div>
         <div style="text-align:center;font-size:11px;color:#999;margin-top:6px;">같은 이미지로 다른 서비스의 결과도 비교해보세요</div>
@@ -764,22 +764,22 @@ function showResultsPixel(topFonts, text, total) {
 
         <div style="text-align:center;margin-top:12px;font-size:11px;color:#f59e0b;">⚡ 로컬 분석 (픽셀 비교)</div>
 
-        <div class="section-title">다른 서비스와 비교해보기</div>
+        <div class="section-title">연관 서비스</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <a href="https://www.myfonts.com/pages/whatthefont" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🔤 WhatTheFont
+            <a href="https://www.myfonts.com/pages/whatthefont" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
+                🔤 WhatTheFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
             </a>
-            <a href="https://www.fontsquirrel.com/matcherator" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🐿 Font Squirrel
+            <a href="https://www.fontsquirrel.com/matcherator" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
+                🐿 Font Squirrel<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
             </a>
-            <a href="https://www.whatfontis.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🔎 WhatFontIs
+            <a href="https://www.whatfontis.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
+                🔎 WhatFontIs<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
             </a>
-            <a href="https://fonts.adobe.com/fonts" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🅰 Adobe Fonts
+            <a href="https://fonts.adobe.com/fonts" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
+                🅰 Adobe Fonts<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 한글 일부</span>
             </a>
-            <a href="https://www.sandollcloud.com/font-finder-image" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🇰🇷 산돌구름
+            <a href="https://www.sandollcloud.com/font-finder-image" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
+                🇰🇷 산돌구름<br><span style="font-size:10px;color:#999;font-weight:400;">한글 전문</span>
             </a>
         </div>
         <div style="text-align:center;font-size:11px;color:#999;margin-top:6px;">같은 이미지로 다른 서비스의 결과도 비교해보세요</div>
