@@ -69,18 +69,13 @@
         .progress-fill-real { height: 100%; background: #3b82f6; border-radius: 2px; transition: width 0.3s; }
 
         .prompt-showcase {
-            background: #eae7e2;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 16px;
+            background: transparent;
+            padding: 8px 0;
             margin: 12px 0;
-            max-height: 150px;
+            max-height: 180px;
             overflow: hidden;
             position: relative;
-            font-family: -apple-system, sans-serif;
-            font-size: 12px;
-            color: #888;
-            line-height: 1.7;
+            font-size: 13px;
             text-align: left;
         }
         .prompt-showcase::after {
@@ -88,7 +83,23 @@
             position: absolute;
             bottom: 0; left: 0; right: 0;
             height: 50px;
-            background: linear-gradient(transparent, #eae7e2);
+            background: linear-gradient(transparent, #f5f3ef);
+        }
+        .chat-bubble {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px 16px 16px 4px;
+            padding: 8px 14px;
+            margin-bottom: 6px;
+            color: #555;
+            font-size: 13px;
+            max-width: 85%;
+            animation: bubbleIn 0.3s ease;
+        }
+        @keyframes bubbleIn {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
         .prompt-scroll {
             animation: scrollUp 8s linear infinite;
@@ -230,22 +241,35 @@
     function startPromptAnimation() {
         const el = document.getElementById('promptShowcase');
         if (!el) return;
-        let html = '';
+        el.innerHTML = '';
         let i = 0;
-        function addLine() {
+        function addBubble() {
             if (i < promptLines.length) {
-                html += promptLines[i] + '\n';
-                el.innerHTML = '<div>' + html + '</div>';
+                const line = promptLines[i];
+                if (line.trim()) {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'chat-bubble';
+                    bubble.textContent = line;
+                    el.appendChild(bubble);
+                    const br = document.createElement('br');
+                    el.appendChild(br);
+                } else {
+                    const spacer = document.createElement('div');
+                    spacer.style.height = '4px';
+                    el.appendChild(spacer);
+                }
                 el.scrollTop = el.scrollHeight;
                 i++;
-                setTimeout(addLine, 300);
+                setTimeout(addBubble, 400);
             } else {
-                i = 0;
-                html = '';
-                setTimeout(addLine, 1000);
+                setTimeout(() => {
+                    el.innerHTML = '';
+                    i = 0;
+                    addBubble();
+                }, 1500);
             }
         }
-        addLine();
+        addBubble();
     }
     </script>
 </div>
