@@ -663,10 +663,6 @@ function showResults(text, inputText, mode) {
             </div>
         </div>
 
-        <div style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:center;">
-            <div style="font-size:11px;color:#999;">전처리 과정: 이미지를 이진화하고 대비를 강화하여 글자 형태를 선명하게 한 뒤 AI가 분석했어요.</div>
-        </div>
-
         ${parseFailed ? `
             <div class="analysis-card">
                 <div class="analysis-label" style="color:#3b82f6;">🤖 AI 분석 결과</div>
@@ -681,14 +677,13 @@ function showResults(text, inputText, mode) {
             </div>` : ''}
         `}
 
-        ${similar ? `<div class="section-title">유사 폰트</div><div>${similarHtml}</div>` : ''}
-
         ${features ? `<div class="analysis-card"><div class="analysis-label" style="color:#38bdf8;">🔤 폰트 특징</div><div class="analysis-text">${features}</div></div>` : ''}
         ${mood ? `<div class="analysis-card"><div class="analysis-label" style="color:#a78bfa;">✨ 분위기</div><div class="analysis-text">${mood}</div></div>` : ''}
         ${useCase ? `<div class="analysis-card"><div class="analysis-label" style="color:#f472b6;">💡 추천 용도</div><div class="analysis-text">${useCase}</div></div>` : ''}
-        ${pairWith ? `<div class="analysis-card"><div class="analysis-label" style="color:#4ade80;">🔗 페어링 추천</div><div class="analysis-text">${pairWith}</div></div>` : ''}
 
-        <div style="text-align:center;margin-top:12px;font-size:11px;color:#4ade80;">✓ AI 분석 (Cloudflare Workers AI)</div>
+        <button class="retry-btn" id="retryBtn" style="background:#3b82f6;color:#fff;font-size:16px;border:none;">다른 이미지 분석하기</button>
+
+        <div style="margin-top:32px;"></div>
 
         <div class="section-title">연관 서비스</div>
         <div style="font-size:12px;color:#999;margin-bottom:8px;">이미지를 업로드하면 폰트를 찾아주는 서비스들이에요</div>
@@ -715,7 +710,6 @@ function showResults(text, inputText, mode) {
             <div class="analysis-text">${getBrowseSuggestion(fontName, classification, inputText)}</div>
         </div>
 
-        <button class="retry-btn" id="retryBtn">다른 이미지 분석하기</button>
     `;
     results.classList.add('visible');
     bindRetry();
