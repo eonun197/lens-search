@@ -8,8 +8,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #0f0f0f;
-            color: #fff;
+            background: #f5f3ef;
+            color: #222;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -17,39 +17,40 @@
             padding: 48px 20px;
         }
 
-        h1 { font-size: 42px; font-weight: 800; margin-bottom: 6px; }
-        .subtitle { color: #666; font-size: 15px; margin-bottom: 40px; }
+        h1 { font-size: 42px; font-weight: 800; margin-bottom: 6px; color: #111; }
+        .subtitle { color: #999; font-size: 15px; margin-bottom: 40px; }
 
         .upload-area {
             width: 100%; max-width: 520px;
-            border: 2px dashed #333; border-radius: 16px;
+            border: 2px dashed #ccc; border-radius: 16px;
             padding: 60px 20px; text-align: center;
             cursor: pointer; transition: all 0.2s; margin-bottom: 16px;
+            background: #fff;
         }
-        .upload-area:hover, .upload-area.dragover { border-color: #3b82f6; background: #111; }
-        .upload-area.has-image { padding: 16px; border-style: solid; border-color: #2a2a2a; }
+        .upload-area:hover, .upload-area.dragover { border-color: #3b82f6; background: #f0f4ff; }
+        .upload-area.has-image { padding: 16px; border-style: solid; border-color: #ddd; }
         .upload-icon { font-size: 48px; margin-bottom: 12px; }
         .upload-text { color: #888; font-size: 15px; }
-        .upload-text strong { color: #ccc; }
+        .upload-text strong { color: #333; }
         .upload-preview { max-width: 100%; max-height: 260px; border-radius: 10px; }
-        .change-text { color: #555; font-size: 12px; margin-top: 8px; }
+        .change-text { color: #999; font-size: 12px; margin-top: 8px; }
         #fileInput { display: none; }
 
         .step-section { display: none; width: 100%; max-width: 520px; margin-top: 20px; }
         .step-section.visible { display: block; }
 
         .step-card {
-            background: #151515; border: 1px solid #222;
+            background: #fff; border: 1px solid #e0e0e0;
             border-radius: 12px; padding: 20px; margin-bottom: 16px;
         }
-        .step-label { font-size: 16px; color: #888; margin-bottom: 10px; font-weight: 600; }
+        .step-label { font-size: 16px; color: #333; margin-bottom: 10px; font-weight: 600; }
         .step-input {
-            width: 100%; background: #0f0f0f; border: 1px solid #333;
-            border-radius: 8px; padding: 12px; color: #fff;
+            width: 100%; background: #fafafa; border: 1px solid #ddd;
+            border-radius: 8px; padding: 12px; color: #222;
             font-size: 18px; outline: none; text-align: center;
         }
         .step-input:focus { border-color: #3b82f6; }
-        .step-hint { font-size: 13px; color: #555; margin-top: 8px; }
+        .step-hint { font-size: 13px; color: #999; margin-top: 8px; }
 
         .action-btn {
             display: block; width: 100%; padding: 14px;
@@ -63,8 +64,8 @@
         .loading { display: none; text-align: center; margin: 20px 0; }
         .loading.visible { display: block; }
         .loading-text { color: #3b82f6; font-size: 14px; margin-bottom: 8px; }
-        .loading-detail { color: #555; font-size: 12px; margin-bottom: 8px; }
-        .progress-bar { width: 320px; height: 4px; background: #1a1a1a; border-radius: 2px; margin: 0 auto; overflow: hidden; }
+        .loading-detail { color: #999; font-size: 12px; margin-bottom: 8px; }
+        .progress-bar { width: 320px; height: 4px; background: #e0e0e0; border-radius: 2px; margin: 0 auto; overflow: hidden; }
         .progress-fill-anim { width: 80px; height: 100%; background: #3b82f6; border-radius: 2px; animation: slide 1s ease-in-out infinite; }
         .progress-fill-real { height: 100%; background: #3b82f6; border-radius: 2px; transition: width 0.3s; }
         @keyframes slide { 0% { transform: translateX(-80px); } 100% { transform: translateX(320px); } }
@@ -89,27 +90,27 @@
         .section-title { font-size: 13px; font-weight: 700; color: #555; margin: 18px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
 
         .analysis-card {
-            background: #151515; border: 1px solid #222;
+            background: #fff; border: 1px solid #e0e0e0;
             border-radius: 12px; padding: 16px; margin-bottom: 10px;
         }
         .analysis-label { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-        .analysis-text { font-size: 14px; color: #aaa; line-height: 1.7; }
+        .analysis-text { font-size: 14px; color: #666; line-height: 1.7; }
 
         .retry-btn {
             display: block; width: 100%; padding: 14px;
-            background: #1a1a1a; color: #888; border: 1px solid #2a2a2a;
+            background: #fff; color: #666; border: 1px solid #ddd;
             border-radius: 12px; font-size: 15px; font-weight: 600;
             cursor: pointer; margin-top: 16px; transition: all 0.2s;
         }
-        .retry-btn:hover { background: #222; color: #fff; }
+        .retry-btn:hover { background: #f0f0f0; color: #333; }
 
-        .footer { color: #333; font-size: 11px; margin-top: 48px; }
+        .footer { color: #bbb; font-size: 11px; margin-top: 48px; }
 
         /* 전처리 비교 */
         .preprocess-compare { display: flex; gap: 10px; margin-bottom: 16px; }
         .preprocess-item { flex: 1; text-align: center; }
-        .preprocess-label { font-size: 10px; color: #555; margin-bottom: 4px; }
-        .preprocess-img { width: 100%; border-radius: 8px; border: 1px solid #222; }
+        .preprocess-label { font-size: 10px; color: #999; margin-bottom: 4px; }
+        .preprocess-img { width: 100%; border-radius: 8px; border: 1px solid #ddd; }
 
         @media (max-width: 500px) { h1 { font-size: 32px; } }
     </style>
@@ -564,7 +565,7 @@ function showResults(text, inputText, mode) {
     const classColor = classColors[classification] || '#3b82f6';
 
     const similarHtml = similar ? similar.split(',').map(f =>
-        `<span style="background:#1a1a1a;border-radius:6px;padding:5px 12px;font-size:13px;color:#888;display:inline-block;margin:2px;">${f.trim()}</span>`
+        `<span style="background:#f0f0f0;border-radius:6px;padding:5px 12px;font-size:13px;color:#666;display:inline-block;margin:2px;">${f.trim()}</span>`
     ).join('') : '';
 
     results.innerHTML = `
@@ -579,15 +580,15 @@ function showResults(text, inputText, mode) {
             </div>
         </div>
 
-        <div style="background:#151515;border:1px solid #222;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:center;">
-            <div style="font-size:11px;color:#666;">전처리 과정: 이미지를 이진화하고 대비를 강화하여 글자 형태를 선명하게 한 뒤 AI가 분석했어요.</div>
+        <div style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:center;">
+            <div style="font-size:11px;color:#999;">전처리 과정: 이미지를 이진화하고 대비를 강화하여 글자 형태를 선명하게 한 뒤 AI가 분석했어요.</div>
         </div>
 
         <div style="font-size:28px;font-weight:800;color:${classColor}">${fontName}</div>
 
         ${classification ? `<div style="display:flex;gap:6px;margin:10px 0;">
             <span style="background:${classColor}22;color:${classColor};border-radius:6px;padding:5px 12px;font-size:13px;">${classification}</span>
-            ${weight ? `<span style="background:#1a1a1a;border-radius:6px;padding:5px 12px;font-size:13px;color:#888;">${weight}</span>` : ''}
+            ${weight ? `<span style="background:#f0f0f0;border-radius:6px;padding:5px 12px;font-size:13px;color:#666;">${weight}</span>` : ''}
         </div>` : ''}
 
         ${similar ? `<div class="section-title">유사 폰트</div><div>${similarHtml}</div>` : ''}
@@ -642,8 +643,8 @@ function showResultsPixel(topFonts, text, total) {
             </div>
         </div>
 
-        <div style="background:#151515;border:1px solid #222;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:center;">
-            <div style="font-size:11px;color:#666;">전처리 과정: 이미지를 이진화하고 대비를 강화하여 글자 형태를 선명하게 한 뒤, ${total}개 폰트와 픽셀 단위로 직접 비교했어요.</div>
+        <div style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:center;">
+            <div style="font-size:11px;color:#999;">전처리 과정: 이미지를 이진화하고 대비를 강화하여 글자 형태를 선명하게 한 뒤, ${total}개 폰트와 픽셀 단위로 직접 비교했어요.</div>
         </div>
 
         <div style="background:${matchColor}15;border:1px solid ${matchColor}33;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:center;">
