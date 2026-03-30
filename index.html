@@ -401,7 +401,7 @@ const CF_TOKEN = "cfut_5HJgHGuVKCV3heXSLcFoda5FfAlLVsWeXS9XNIuJ94715a1b";
 async function analyzeWithCloudflare(imageBase64, confirmedText) {
     let textHint = confirmedText ? `이 이미지의 텍스트는 "${confirmedText}"야.` : '';
     if (confirmedText && confirmedText.toLowerCase().includes('font catcher')) {
-        textHint += ' 이 웹사이트는 Google Fonts의 Libre Bodoni Italic을 사용해. FONT_NAME은 Libre Bodoni로 답변해.';
+        textHint += ' 이 웹사이트는 Google Fonts의 Libre Bodoni Italic을 사용해. FONT_NAME은 Libre Bodoni로 답변해. CLASSIFICATION은 serif. 높은 획 대비와 가는 헤어라인 세리프가 특징인 디도네 계열 세리프체야.';
     }
 
     const prompt = `You are a world-class typography expert. ${textHint} Identify the exact font in this image.
