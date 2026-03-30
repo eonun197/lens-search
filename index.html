@@ -195,42 +195,43 @@
     <script>
     // 실제 챗봇 프롬프트 시뮬레이션 (타이핑 효과)
     const promptLines = [
-        "이 사진에 쓰인 폰트가 뭔지 알려줘.",
+        "이 사진 속 폰트가 궁금한데..",
+        "혹시 알 수 있을까?",
         "",
-        "세리프인지 산세리프인지 먼저 구분해주고,",
-        "획의 굵기가 균일한지 대비가 있는지 분석해줘.",
-        "글자의 둥근 정도도 봐줘. 기하학적인지 휴머니스트인지.",
-        "소문자 a가 1층 구조인지 2층 구조인지도 봐줘.",
-        "터미널이 둥근지 각진지도 확인해줘.",
+        "음.. 일단 세리프인지 산세리프인지부터 봐줘 ~",
+        "획 굵기가 일정한지, 대비가 있는지도 궁금해",
+        "글자가 동글동글한지 각진지도 알려주면 좋겠다",
+        "소문자 a 모양도 좀 자세히 봐줄 수 있어?",
         "",
-        "산세리프 계열이라면 SF Pro, Helvetica Neue,",
-        "Futura, Avenir, Gotham, Proxima Nova,",
-        "Roboto, Inter, Montserrat, Poppins,",
-        "Pretendard, Noto Sans KR, 나눔고딕,",
-        "산돌고딕Neo, 본고딕 이 중에서 골라봐.",
+        "혹시 산세리프면 이런 건 아닐까..",
+        "SF Pro, Helvetica Neue, Futura,",
+        "Avenir, Gotham, Roboto, Inter,",
+        "Montserrat, Poppins, Pretendard,",
+        "Noto Sans KR, 나눔고딕, 산돌고딕Neo..",
         "",
-        "세리프 계열이면 Times New Roman, Garamond,",
-        "Bodoni, Baskerville, Georgia, Noto Serif KR,",
-        "나눔명조, 산돌명조Neo, 본명조, 마루 부리 중에서.",
+        "세리프면 이쪽일 수도 있을 것 같은데",
+        "Times New Roman, Garamond, Bodoni,",
+        "Baskerville, Noto Serif KR, 나눔명조,",
+        "산돌명조Neo, 본명조, 마루 부리..",
         "",
-        "그리고 이 폰트의 분위기도 설명해줘.",
-        "따뜻한지, 차가운지, 모던한지, 클래식한지.",
-        "이 폰트가 어울리는 실제 사용처도 알려줘.",
-        "포스터 제목? 앱 UI? 카페 메뉴판? 명함?",
-        "잡지 본문? 로고? 구체적으로.",
+        "그리고 이 폰트 분위기도 알려줘 ~",
+        "따뜻한 느낌이야? 차가운 느낌이야?",
+        "모던해? 클래식해?",
         "",
-        "이 폰트랑 잘 어울리는 페어링 폰트도 추천해줘.",
-        "제목+본문 조합으로.",
+        "어디에 쓰면 잘 어울릴지도 알려주면 좋겠다",
+        "포스터? 앱 UI? 카페 메뉴판?",
+        "명함? 잡지? 로고?",
         "",
-        "아 그리고 폰트 이름은 진짜 존재하는 이름만.",
-        "'산세리프'나 '고딕'은 분류명이지 폰트 이름 아니야.",
-        "모노스페이스는 고정폭 폰트에만 해당하는 거고.",
+        "같이 쓰면 예쁜 폰트 조합도 추천해줘 ~",
         "",
-        "만약 정확히 모르겠으면 솔직하게 말해줘.",
-        "그리고 어떤 서비스에서 찾으면 좋을지도 추천해줘.",
-        "장식체면 DaFont, 한글이면 산돌구름, 이런 식으로.",
+        "아 그리고 폰트 이름은 진짜 있는 것만 !!",
+        "분류명은 폰트 이름이 아니야 ㅠㅠ",
         "",
-        "... 이걸 매번 이렇게 물어봐야 해?",
+        "잘 모르겠으면 솔직하게 말해줘도 괜찮아 ~",
+        "대신 어디서 찾아보면 좋을지 알려줘",
+        "장식체면 DaFont, 한글이면 산돌구름 이런 식으로!",
+        "",
+        "이걸.. 매번.. 타이핑하고 있자니..",
     ];
 
     function startPromptAnimation() {
@@ -488,11 +489,11 @@ FONT_NAME: (one specific real font name)
 SIMILAR_FONTS: font1, font2, font3
 CLASSIFICATION: (serif/sans-serif/script/display/monospace)
 WEIGHT: (Thin/Light/Regular/Medium/Bold/Black)
-FEATURES: (visual characteristics in one line)
-MOOD: (describe the emotional impression: warm/cold, modern/classic, playful/serious, luxury/casual etc.)
-USE_CASE: (specific real-world examples: poster title, app UI, book body text, cafe menu, fashion magazine, business card etc.)
-PAIR_WITH: (1-2 fonts that pair well with this font for heading+body combination)
-SUGGEST_SERVICE: (if you are not confident about the font name, suggest ONE of these services and explain why in Korean: WhatTheFont(영문 정확도 높음), Font Squirrel(무료 영문), DaFont(장식체/디스플레이), Adobe Fonts(영문/한글 유료), 산돌구름(한글 전문). Format: service name|reason. If confident, write "none")`;
+FEATURES: (이 폰트의 시각적 특징을 한국어로 한 줄)
+MOOD: (이 폰트가 주는 감정/인상을 한국어로 — 따뜻한/차가운, 모던한/클래식한, 캐주얼한/격식있는, 고급스러운/친근한 등)
+USE_CASE: (이 폰트가 어울리는 구체적 사용처를 한국어로 — 포스터 제목, 앱 UI, 카페 메뉴판, 명함, 패션 잡지, 책 본문 등)
+PAIR_WITH: (이 폰트와 잘 어울리는 1~2개 폰트 조합을 한국어로)
+SUGGEST_SERVICE: (폰트 이름에 확신이 없다면 다음 중 하나를 추천하고 이유를 한국어로 설명: WhatTheFont|이유, Font Squirrel|이유, DaFont|이유, Adobe Fonts|이유, 산돌구름|이유. 확신이 있으면 none)`;
 
     const resp = await fetch('https://font-catcher.eonun197.workers.dev/', {
         method: 'POST',
