@@ -354,7 +354,49 @@ document.getElementById('textInput').addEventListener('keydown', (e) => {
 });
 document.getElementById('analyzeBtn').addEventListener('click', startAnalysis);
 
-// ===== 픽셀 비교 분석 =====
+// ===== Cloudflare Workers AI =====
+const CF_ACCOUNT = "5de6bee5d8346c93864e4834e0661077";
+const CF_TOKEN = "cfut_5HJgHGuVKCV3heXSLcFoda5FfAlLVsWeXS9XNIuJ94715a1b";
+
+async function analyzeWithCloudflare(imageBase64, confirmedText) {
+    const textHint = confirmedText ? `이 이미지의 텍스트는 "${confirmedText}"야.` : '';
+
+    const prompt = `너는 타이포그래피 전문가야. ${textHint} 이 이미지에서 보이는 폰트를 분석하고 찾아줘.
+
+반드시 아래 형식으로만 답변해:
+FONT_NAME: (가장 유사한 폰트 이름)
+SIMILAR_FONTS: 폰트1, 폰트2, 폰트3
+CLASSIFICATION: (세리프/산세리프/스크립트/디스플레이/모노스페이스 중 하나)
+WEIGHT: (Thin/Light/Regular/Medium/Bold/Black 중 하나)
+FEATURES: (폰트의 시각적 특징 한 줄)
+MOOD: (폰트가 주는 분위기 한 줄)
+USE_CASE: (적합한 사용 상황 한 줄)
+FREE_ALTERNATIVE: (무료 대안 폰트와 다운로드처)`;
+
+    const resp = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/ai/run/@cf/meta/llama-3.2-11b-vision-instruct`,
+        {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${CF_TOKEN}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                messages: [{
+                    role: 'user',
+                    content: prompt
+                }],
+                image: imageBase64
+            })
+        }
+    );
+
+    if (!resp.ok) throw new Error('AI 분석 실패');
+    const data = await resp.json();
+    return data.result.response;
+}
+
+// ===== 분석 시작 =====
 async function startAnalysis() {
     const text = document.getElementById('textInput').value.trim();
     if (!text) return;
@@ -366,8 +408,29 @@ async function startAnalysis() {
     loading.classList.add('visible');
     results.classList.remove('visible');
 
+    document.getElementById('loadingText').textContent = 'AI가 폰트를 분석하고 있어요...';
+    document.getElementById('loadingDetail').textContent = '';
+    document.getElementById('progressBar').style.width = '50%';
+
+    try {
+        const base64 = preprocessedImageSrc.split(',')[1];
+        const aiResult = await analyzeWithCloudflare(base64, text);
+        document.getElementById('progressBar').style.width = '100%';
+        loading.classList.remove('visible');
+        showResults(aiResult, text, 'ai');
+    } catch (e) {
+        // AI 실패 시 픽셀 비교로 폴백
+        document.getElementById('loadingText').textContent = '픽셀 비교로 분석 중...';
+        await runPixelComparison(text);
+    }
+}
+
+// ===== 픽셀 비교 (폴백) =====
+async function runPixelComparison(text) {
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+
     const MAX_FONTS = GOOGLE_FONTS.length;
-    document.getElementById('loadingText').textContent = '폰트를 불러오는 중...';
     document.getElementById('loadingDetail').textContent = `${MAX_FONTS}개 폰트 로딩`;
     await loadGoogleFonts(MAX_FONTS, (loaded, total) => {
         document.getElementById('loadingDetail').textContent = `${loaded}/${total}개 폰트 로딩`;
@@ -375,33 +438,24 @@ async function startAnalysis() {
     });
 
     document.getElementById('loadingText').textContent = '이미지와 비교하는 중...';
-
-    // 전처리된 이미지로 비교
     const originalPixels = await getImagePixels(preprocessedImageSrc);
 
-    // 각 폰트로 렌더링 후 비교
     const scores = [];
-    const fontsToCompare = GOOGLE_FONTS.slice(0, MAX_FONTS);
-    const total = fontsToCompare.length;
-
+    const total = GOOGLE_FONTS.length;
     for (let i = 0; i < total; i++) {
-        const font = fontsToCompare[i];
+        const font = GOOGLE_FONTS[i];
         const similarity = compareWithFont(originalPixels, text, font.name);
         scores.push({ ...font, score: similarity });
-
         if (i % 20 === 0) {
-            const pct = 30 + Math.round((i / total) * 70);
-            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressBar').style.width = (30 + Math.round((i/total)*70)) + '%';
             document.getElementById('loadingDetail').textContent = `${i}/${total} 폰트 비교 중...`;
-            await new Promise(r => setTimeout(r, 0)); // UI 업데이트
+            await new Promise(r => setTimeout(r, 0));
         }
     }
 
-    document.getElementById('progressBar').style.width = '100%';
-
     scores.sort((a, b) => b.score - a.score);
     loading.classList.remove('visible');
-    showResults(scores.slice(0, 5), text, total);
+    showResultsPixel(scores.slice(0, 5), text, total);
 }
 
 function getImagePixels(dataUrl) {
@@ -484,7 +538,75 @@ function compareWithFont(originalPixels, text, fontName) {
     return totalPx > 0 ? (match / totalPx) * 100 : 0;
 }
 
-function showResults(topFonts, text, total) {
+// ===== AI 결과 표시 =====
+function showResults(text, inputText, mode) {
+    const results = document.getElementById('results');
+
+    const get = (key) => {
+        const regex = new RegExp(key + ':\\s*(.+)', 'i');
+        const match = text.match(regex);
+        return match ? match[1].trim() : '';
+    };
+
+    const fontName = get('FONT_NAME');
+    const similar = get('SIMILAR_FONTS');
+    const classification = get('CLASSIFICATION');
+    const weight = get('WEIGHT');
+    const features = get('FEATURES');
+    const mood = get('MOOD');
+    const useCase = get('USE_CASE');
+    const freeAlt = get('FREE_ALTERNATIVE');
+
+    const classColors = {
+        '세리프': '#D4A574', '산세리프': '#888', '슬래브세리프': '#D4A574',
+        '스크립트': '#C8A2C8', '디스플레이': '#FF69B4', '모노스페이스': '#00FF41'
+    };
+    const classColor = classColors[classification] || '#3b82f6';
+
+    const similarHtml = similar ? similar.split(',').map(f =>
+        `<span style="background:#1a1a1a;border-radius:6px;padding:5px 12px;font-size:13px;color:#888;display:inline-block;margin:2px;">${f.trim()}</span>`
+    ).join('') : '';
+
+    results.innerHTML = `
+        <div class="preprocess-compare">
+            <div class="preprocess-item">
+                <div class="preprocess-label">원본</div>
+                <img src="${uploadedImageSrc}" class="preprocess-img">
+            </div>
+            <div class="preprocess-item">
+                <div class="preprocess-label">전처리 (이진화 + 대비 강화)</div>
+                <img src="${preprocessedImageSrc}" class="preprocess-img">
+            </div>
+        </div>
+
+        <div style="background:#151515;border:1px solid #222;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:center;">
+            <div style="font-size:11px;color:#666;">전처리 과정: 이미지를 이진화하고 대비를 강화하여 글자 형태를 선명하게 한 뒤 AI가 분석했어요.</div>
+        </div>
+
+        <div style="font-size:28px;font-weight:800;color:${classColor}">${fontName}</div>
+
+        ${classification ? `<div style="display:flex;gap:6px;margin:10px 0;">
+            <span style="background:${classColor}22;color:${classColor};border-radius:6px;padding:5px 12px;font-size:13px;">${classification}</span>
+            ${weight ? `<span style="background:#1a1a1a;border-radius:6px;padding:5px 12px;font-size:13px;color:#888;">${weight}</span>` : ''}
+        </div>` : ''}
+
+        ${similar ? `<div class="section-title">유사 폰트</div><div>${similarHtml}</div>` : ''}
+
+        ${features ? `<div class="analysis-card"><div class="analysis-label" style="color:#38bdf8;">🔤 폰트 특징</div><div class="analysis-text">${features}</div></div>` : ''}
+        ${mood ? `<div class="analysis-card"><div class="analysis-label" style="color:#a78bfa;">✨ 분위기</div><div class="analysis-text">${mood}</div></div>` : ''}
+        ${useCase ? `<div class="analysis-card"><div class="analysis-label" style="color:#f472b6;">💡 추천 용도</div><div class="analysis-text">${useCase}</div></div>` : ''}
+        ${freeAlt ? `<div class="analysis-card"><div class="analysis-label" style="color:#4ade80;">🆓 무료 대안</div><div class="analysis-text">${freeAlt}</div></div>` : ''}
+
+        <div style="text-align:center;margin-top:12px;font-size:11px;color:#4ade80;">✓ AI 분석 (Cloudflare Workers AI)</div>
+
+        <button class="retry-btn" id="retryBtn">다른 이미지 분석하기</button>
+    `;
+    results.classList.add('visible');
+    bindRetry();
+}
+
+// ===== 픽셀 비교 결과 표시 =====
+function showResultsPixel(topFonts, text, total) {
     const results = document.getElementById('results');
 
     let ranksHtml = '';
@@ -496,25 +618,17 @@ function showResults(topFonts, text, total) {
                 <div class="rank-info">
                     <div class="rank-name" style="${isTop ? 'color:#3b82f6;font-size:18px;' : ''}">${font.name}</div>
                     <div class="rank-sample" style="font-family:'${font.name}',sans-serif;">${text}</div>
-                    <div class="rank-score">유사도 ${font.score.toFixed(1)}% · ${font.category}</div>
+                    <div class="rank-score">유사도 ${font.score.toFixed(1)}%</div>
                     <div class="rank-bar"><div class="rank-bar-fill" style="width:${font.score}%;${isTop ? 'background:#3b82f6;' : 'background:#333;'}"></div></div>
                 </div>
             </div>`;
     });
 
-    const topFont = topFonts[0];
-    const topScore = topFont.score;
+    const topScore = topFonts[0].score;
     let matchMsg, matchColor;
-    if (topScore >= 95) {
-        matchMsg = "✅ 정확히 이 폰트일 가능성이 높아요";
-        matchColor = "#4ade80";
-    } else if (topScore >= 70) {
-        matchMsg = "🔎 비슷한 폰트예요 (유료 폰트일 수 있어요)";
-        matchColor = "#f59e0b";
-    } else {
-        matchMsg = "💡 참고용이에요 (정확한 폰트는 아닐 수 있어요)";
-        matchColor = "#ef4444";
-    }
+    if (topScore >= 95) { matchMsg = "✅ 정확히 이 폰트일 가능성이 높아요"; matchColor = "#4ade80"; }
+    else if (topScore >= 70) { matchMsg = "🔎 비슷한 폰트예요 (유료 폰트일 수 있어요)"; matchColor = "#f59e0b"; }
+    else { matchMsg = "💡 참고용이에요 (정확한 폰트는 아닐 수 있어요)"; matchColor = "#ef4444"; }
 
     results.innerHTML = `
         <div class="preprocess-compare">
@@ -539,18 +653,17 @@ function showResults(topFonts, text, total) {
         <div class="section-title">가장 유사한 폰트 (${total}개 비교)</div>
         ${ranksHtml}
 
-        <div class="analysis-card" style="margin-top:16px;">
-            <div class="analysis-label" style="color:#4ade80;">🆓 모두 무료</div>
-            <div class="analysis-text">위 폰트들은 모두 Google Fonts에서 무료로 다운로드할 수 있어요.<br>
-            <a href="https://fonts.google.com/specimen/${topFont.css}" target="_blank" style="color:#3b82f6;">→ ${topFont.name} 다운로드</a></div>
-        </div>
+        <div style="text-align:center;margin-top:12px;font-size:11px;color:#f59e0b;">⚡ 로컬 분석 (픽셀 비교)</div>
 
         <button class="retry-btn" id="retryBtn">다른 이미지 분석하기</button>
     `;
     results.classList.add('visible');
+    bindRetry();
+}
 
+function bindRetry() {
     document.getElementById('retryBtn').addEventListener('click', () => {
-        results.classList.remove('visible');
+        document.getElementById('results').classList.remove('visible');
         uploadArea.classList.remove('has-image');
         document.getElementById('uploadContent').innerHTML =
             `<div class="upload-icon">🔍</div><div class="upload-text"><strong>이미지를 드래그</strong>하거나 클릭해서 업로드</div>`;
