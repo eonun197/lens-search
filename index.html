@@ -362,7 +362,13 @@ const CF_TOKEN = "cfut_5HJgHGuVKCV3heXSLcFoda5FfAlLVsWeXS9XNIuJ94715a1b";
 async function analyzeWithCloudflare(imageBase64, confirmedText) {
     const textHint = confirmedText ? `이 이미지의 텍스트는 "${confirmedText}"야.` : '';
 
-    const prompt = `너는 타이포그래피 전문가야. ${textHint} 이 이미지에서 보이는 폰트를 분석하고 찾아줘.
+    const prompt = `너는 한국과 글로벌 타이포그래피에 정통한 전문가야. ${textHint} 이 이미지에서 보이는 폰트를 분석하고 찾아줘.
+
+한글 텍스트라면 아래 한글 폰트들을 우선 고려해:
+고딕 계열: 산돌고딕Neo, Pretendard, Noto Sans KR, 나눔고딕, 본고딕, Apple SD 산돌고딕 Neo, 에스코어 드림, G마켓 산스, 넥슨 고딕, 여기어때 잘난체, 카페24 슈퍼매직, 야놀자 야체
+명조 계열: 산돌명조Neo, Noto Serif KR, 나눔명조, 본명조, 마루 부리, KoPub바탕체, 리디바탕
+손글씨/디스플레이: 배민 한나는 열한살, 배민 을지로체, 교보 손글씨, KCC 은영체, 카페24 모야모야, 산돌 삼립호빵체
+영문이라면 Helvetica, Futura, Garamond, Bodoni, Avenir, Gotham 등을 고려해.
 
 반드시 아래 형식으로만 답변해:
 FONT_NAME: (가장 유사한 폰트 이름)
