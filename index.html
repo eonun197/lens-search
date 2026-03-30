@@ -685,8 +685,6 @@ function showResults(text, inputText, mode) {
         ${useCase ? `<div class="analysis-card"><div class="analysis-label" style="color:#f472b6;">💡 추천 용도</div><div class="analysis-text">${useCase}</div></div>` : ''}
         ${pairWith ? `<div class="analysis-card"><div class="analysis-label" style="color:#4ade80;">🔗 페어링 추천</div><div class="analysis-text">${pairWith}</div></div>` : ''}
 
-        ${suggestHtml}
-
         <div style="text-align:center;margin-top:12px;font-size:11px;color:#4ade80;">✓ AI 분석 (Cloudflare Workers AI)</div>
 
         <div class="section-title">연관 서비스</div>
@@ -700,9 +698,6 @@ function showResults(text, inputText, mode) {
             <a href="https://www.whatfontis.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
                 🔎 WhatFontIs<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 유료/무료 대안 추천</span>
             </a>
-            <a href="https://www.dafont.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🆓 DaFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 장식체/디스플레이 많음</span>
-            </a>
             <a href="https://fonts.adobe.com/fonts" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
                 🅰 Adobe Fonts<br><span style="font-size:10px;color:#999;font-weight:400;">영문/한글 · 구독자 전용</span>
             </a>
@@ -710,25 +705,10 @@ function showResults(text, inputText, mode) {
                 🇰🇷 산돌구름<br><span style="font-size:10px;color:#999;font-weight:400;">한글 전문 · 이미지 검색</span>
             </a>
         </div>
-        <div style="text-align:center;font-size:11px;color:#999;margin-top:6px;">같은 이미지로 다른 서비스의 결과도 비교해보세요</div>
 
-        <div class="section-title">비슷한 느낌의 폰트 더 찾아보기</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <a href="https://noonnu.cc/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🇰🇷 눈누<br><span style="font-size:10px;color:#999;font-weight:400;">한글 무료 폰트 · 분위기별 탐색</span>
-            </a>
-            <a href="https://fonts.google.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🔠 Google Fonts<br><span style="font-size:10px;color:#999;font-weight:400;">영문/한글 · 카테고리별 필터</span>
-            </a>
-            <a href="https://www.dafont.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🆓 DaFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 장식체/디스플레이 다양</span>
-            </a>
-            <a href="https://www.sandollcloud.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🔍 산돌구름<br><span style="font-size:10px;color:#999;font-weight:400;">한글 유료 · 스타일별 탐색</span>
-            </a>
-            <a href="https://fonts.adobe.com/fonts" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🅰 Adobe Fonts<br><span style="font-size:10px;color:#999;font-weight:400;">영문/한글 · 분위기별 추천</span>
-            </a>
+        <div class="analysis-card" style="margin-top:14px;">
+            <div class="analysis-label" style="color:#3b82f6;">🔍 비슷한 느낌의 폰트 찾아보기</div>
+            <div class="analysis-text">${getBrowseSuggestion(fontName, classification, inputText)}</div>
         </div>
 
         <button class="retry-btn" id="retryBtn">다른 이미지 분석하기</button>
@@ -833,6 +813,19 @@ function showResultsPixel(topFonts, text, total) {
     `;
     results.classList.add('visible');
     bindRetry();
+}
+
+function getBrowseSuggestion(fontName, classification, inputText) {
+    const isKorean = /[가-힣]/.test(inputText);
+    const isDecorative = !fontName || (classification && (classification.toLowerCase().includes('script') || classification.toLowerCase().includes('display')));
+
+    if (isKorean) {
+        return '한글 폰트를 찾고 계시네요. <a href="https://noonnu.cc/" target="_blank" style="color:#3b82f6;font-weight:600;">눈누</a>에서 분위기별로 비슷한 한글 폰트를 탐색해보세요.';
+    } else if (isDecorative) {
+        return '장식적인 느낌의 폰트네요. <a href="https://www.dafont.com/" target="_blank" style="color:#3b82f6;font-weight:600;">DaFont</a>에서 다양한 장식체/디스플레이 폰트를 찾아보세요.';
+    } else {
+        return '비슷한 느낌의 영문 폰트를 <a href="https://fonts.google.com/" target="_blank" style="color:#3b82f6;font-weight:600;">Google Fonts</a>에서 카테고리별로 탐색해보세요.';
+    }
 }
 
 function bindRetry() {
