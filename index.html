@@ -189,28 +189,67 @@
     <div class="loading-detail" id="loadingDetail"></div>
     <div class="progress-bar"><div class="progress-fill-real" id="progressBar" style="width:0%"></div></div>
 
-    <div class="prompt-showcase">
-        <div class="prompt-scroll">
-너는 타이포그래피 전문가야. 이 이미지에 있는 폰트를 정확하게 찾아줘.
-
-우선 세리프인지 산세리프인지 구분해줘. 그리고 획의 굵기 대비를 분석하고, 글자의 둥근 정도, 자간, x높이 비율도 봐줘. 터미널이 둥근지 각진지도 확인해줘.
-
-산세리프라면 SF Pro, Helvetica Neue, Futura, Avenir, Gotham, Roboto, Inter, Montserrat, Poppins, Pretendard, Noto Sans KR, 나눔고딕, 산돌고딕Neo, 본고딕 중에서 찾아봐.
-
-세리프라면 Times New Roman, Garamond, Bodoni, Baskerville, Georgia, Noto Serif KR, 나눔명조, 산돌명조Neo, 본명조, 마루 부리 중에서 찾아봐.
-
-폰트 이름은 반드시 실제 존재하는 이름이어야 해. 분류명을 폰트 이름으로 쓰면 안 돼. 모노스페이스는 고정폭 폰트에만 해당해.
-
-이 폰트의 분위기가 따뜻한지, 차가운지, 모던한지, 클래식한지, 캐주얼한지, 포멀한지도 알려줘. 그리고 이 폰트가 잘 어울리는 실제 사용처를 구체적으로 알려줘. 포스터, 앱 UI, 카페 메뉴판, 명함, 잡지 본문 같은 예시로.
-
-마지막으로 이 폰트와 잘 어울리는 페어링 폰트도 추천해줘...
-
-전처리 중: 이진화 적용, 오츠 임계값 계산, 대비 1.5배 강화, 세리프 여부 분석, 200개 이상 폰트와 픽셀 비교 진행 중...
-
-너는 타이포그래피 전문가야. 이 이미지에 있는 폰트를 정확하게 찾아줘...
-        </div>
-    </div>
+    <div class="prompt-showcase" id="promptShowcase"></div>
     <div class="prompt-note"><span class="spin-icon">✏️</span> 분석 중...</div>
+
+    <script>
+    // 실제 챗봇 프롬프트 시뮬레이션 (타이핑 효과)
+    const promptLines = [
+        "이 사진에 쓰인 폰트가 뭔지 알려줘.",
+        "",
+        "세리프인지 산세리프인지 먼저 구분해주고,",
+        "획의 굵기가 균일한지 대비가 있는지 분석해줘.",
+        "글자의 둥근 정도도 봐줘. 기하학적인지 휴머니스트인지.",
+        "소문자 a가 1층 구조인지 2층 구조인지도 봐줘.",
+        "터미널이 둥근지 각진지도 확인해줘.",
+        "",
+        "산세리프 계열이라면 SF Pro, Helvetica Neue,",
+        "Futura, Avenir, Gotham, Proxima Nova,",
+        "Roboto, Inter, Montserrat, Poppins,",
+        "Pretendard, Noto Sans KR, 나눔고딕,",
+        "산돌고딕Neo, 본고딕 이 중에서 골라봐.",
+        "",
+        "세리프 계열이면 Times New Roman, Garamond,",
+        "Bodoni, Baskerville, Georgia, Noto Serif KR,",
+        "나눔명조, 산돌명조Neo, 본명조, 마루 부리 중에서.",
+        "",
+        "그리고 이 폰트의 분위기도 설명해줘.",
+        "따뜻한지, 차가운지, 모던한지, 클래식한지.",
+        "이 폰트가 어울리는 실제 사용처도 알려줘.",
+        "포스터 제목? 앱 UI? 카페 메뉴판? 명함?",
+        "잡지 본문? 로고? 구체적으로.",
+        "",
+        "이 폰트랑 잘 어울리는 페어링 폰트도 추천해줘.",
+        "제목+본문 조합으로.",
+        "",
+        "아 그리고 폰트 이름은 진짜 존재하는 이름만.",
+        "'산세리프'나 '고딕'은 분류명이지 폰트 이름 아니야.",
+        "모노스페이스는 고정폭 폰트에만 해당하는 거고.",
+        "",
+        "... 이걸 매번 이렇게 물어봐야 해?",
+    ];
+
+    function startPromptAnimation() {
+        const el = document.getElementById('promptShowcase');
+        if (!el) return;
+        let html = '';
+        let i = 0;
+        function addLine() {
+            if (i < promptLines.length) {
+                html += promptLines[i] + '\n';
+                el.innerHTML = '<div>' + html + '</div>';
+                el.scrollTop = el.scrollHeight;
+                i++;
+                setTimeout(addLine, 300);
+            } else {
+                i = 0;
+                html = '';
+                setTimeout(addLine, 1000);
+            }
+        }
+        addLine();
+    }
+    </script>
 </div>
 
 <!-- 결과 -->
@@ -487,6 +526,7 @@ async function startAnalysis() {
     document.getElementById('loadingText').textContent = 'AI가 폰트를 분석하고 있어요...';
     document.getElementById('loadingDetail').textContent = '';
     document.getElementById('progressBar').style.width = '50%';
+    startPromptAnimation();
 
     try {
         const base64 = uploadedImageSrc.split(',')[1];
@@ -692,22 +732,22 @@ function showResults(text, inputText, mode) {
         <div class="section-title">연관 서비스</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <a href="https://www.myfonts.com/pages/whatthefont" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🔤 WhatTheFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
+                🔤 WhatTheFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 정확도 높음</span>
             </a>
             <a href="https://www.fontsquirrel.com/matcherator" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🐿 Font Squirrel<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
+                🐿 Font Squirrel<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 무료 폰트 위주</span>
             </a>
             <a href="https://www.whatfontis.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🔎 WhatFontIs<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
+                🔎 WhatFontIs<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 유료/무료 대안 추천</span>
             </a>
             <a href="https://www.dafont.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🆓 DaFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 무료 폰트</span>
+                🆓 DaFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 장식체/디스플레이 많음</span>
             </a>
             <a href="https://fonts.adobe.com/fonts" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🅰 Adobe Fonts<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 한글 일부</span>
+                🅰 Adobe Fonts<br><span style="font-size:10px;color:#999;font-weight:400;">영문/한글 · 구독자 전용</span>
             </a>
             <a href="https://www.sandollcloud.com/font-finder-image" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🇰🇷 산돌구름<br><span style="font-size:10px;color:#999;font-weight:400;">한글 전문</span>
+                🇰🇷 산돌구름<br><span style="font-size:10px;color:#999;font-weight:400;">한글 전문 · 이미지 검색</span>
             </a>
         </div>
         <div style="text-align:center;font-size:11px;color:#999;margin-top:6px;">같은 이미지로 다른 서비스의 결과도 비교해보세요</div>
@@ -771,22 +811,22 @@ function showResultsPixel(topFonts, text, total) {
         <div class="section-title">연관 서비스</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <a href="https://www.myfonts.com/pages/whatthefont" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🔤 WhatTheFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
+                🔤 WhatTheFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 정확도 높음</span>
             </a>
             <a href="https://www.fontsquirrel.com/matcherator" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🐿 Font Squirrel<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
+                🐿 Font Squirrel<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 무료 폰트 위주</span>
             </a>
             <a href="https://www.whatfontis.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🔎 WhatFontIs<br><span style="font-size:10px;color:#999;font-weight:400;">영문</span>
+                🔎 WhatFontIs<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 유료/무료 대안 추천</span>
             </a>
             <a href="https://www.dafont.com/" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🆓 DaFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 무료 폰트</span>
+                🆓 DaFont<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 장식체/디스플레이 많음</span>
             </a>
             <a href="https://fonts.adobe.com/fonts" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🅰 Adobe Fonts<br><span style="font-size:10px;color:#999;font-weight:400;">영문 · 한글 일부</span>
+                🅰 Adobe Fonts<br><span style="font-size:10px;color:#999;font-weight:400;">영문/한글 · 구독자 전용</span>
             </a>
             <a href="https://www.sandollcloud.com/font-finder-image" target="_blank" style="flex:1;min-width:140px;display:block;padding:10px 10px 6px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;text-align:center;text-decoration:none;color:#333;font-size:12px;font-weight:600;">
-                🇰🇷 산돌구름<br><span style="font-size:10px;color:#999;font-weight:400;">한글 전문</span>
+                🇰🇷 산돌구름<br><span style="font-size:10px;color:#999;font-weight:400;">한글 전문 · 이미지 검색</span>
             </a>
         </div>
         <div style="text-align:center;font-size:11px;color:#999;margin-top:6px;">같은 이미지로 다른 서비스의 결과도 비교해보세요</div>
