@@ -226,6 +226,10 @@
         "'산세리프'나 '고딕'은 분류명이지 폰트 이름 아니야.",
         "모노스페이스는 고정폭 폰트에만 해당하는 거고.",
         "",
+        "만약 정확히 모르겠으면 솔직하게 말해줘.",
+        "그리고 어떤 서비스에서 찾으면 좋을지도 추천해줘.",
+        "장식체면 DaFont, 한글이면 산돌구름, 이런 식으로.",
+        "",
         "... 이걸 매번 이렇게 물어봐야 해?",
     ];
 
@@ -487,7 +491,8 @@ WEIGHT: (Thin/Light/Regular/Medium/Bold/Black)
 FEATURES: (visual characteristics in one line)
 MOOD: (describe the emotional impression: warm/cold, modern/classic, playful/serious, luxury/casual etc.)
 USE_CASE: (specific real-world examples: poster title, app UI, book body text, cafe menu, fashion magazine, business card etc.)
-PAIR_WITH: (1-2 fonts that pair well with this font for heading+body combination)`;
+PAIR_WITH: (1-2 fonts that pair well with this font for heading+body combination)
+SUGGEST_SERVICE: (if you are not confident about the font name, suggest ONE of these services and explain why in Korean: WhatTheFont(영문 정확도 높음), Font Squirrel(무료 영문), DaFont(장식체/디스플레이), Adobe Fonts(영문/한글 유료), 산돌구름(한글 전문). Format: service name|reason. If confident, write "none")`;
 
     const resp = await fetch('https://font-catcher.eonun197.workers.dev/', {
         method: 'POST',
@@ -672,9 +677,36 @@ function showResults(text, inputText, mode) {
     const mood = get('MOOD');
     const useCase = get('USE_CASE');
     const pairWith = get('PAIR_WITH');
+    const suggestService = get('SUGGEST_SERVICE');
 
     // 파싱 실패 시 원본 응답 표시
     const parseFailed = !fontName;
+
+    // 추천 서비스 링크 매핑
+    const serviceLinks = {
+        'whatthefont': { url: 'https://www.myfonts.com/pages/whatthefont', name: 'WhatTheFont' },
+        'font squirrel': { url: 'https://www.fontsquirrel.com/matcherator', name: 'Font Squirrel' },
+        'dafont': { url: 'https://www.dafont.com/', name: 'DaFont' },
+        'adobe fonts': { url: 'https://fonts.adobe.com/fonts', name: 'Adobe Fonts' },
+        '산돌구름': { url: 'https://www.sandollcloud.com/font-finder-image', name: '산돌구름' },
+    };
+
+    let suggestHtml = '';
+    if (suggestService && suggestService.toLowerCase() !== 'none') {
+        const parts = suggestService.split('|');
+        const svcName = parts[0].trim();
+        const reason = parts[1] ? parts[1].trim() : '';
+        const svcKey = Object.keys(serviceLinks).find(k => svcName.toLowerCase().includes(k));
+        const svc = svcKey ? serviceLinks[svcKey] : null;
+        if (svc) {
+            suggestHtml = `<div class="analysis-card" style="border-color:#3b82f633;">
+                <div class="analysis-label" style="color:#3b82f6;">💡 추천</div>
+                <div class="analysis-text">${reason ? reason + ' ' : ''}<a href="${svc.url}" target="_blank" style="color:#3b82f6;font-weight:600;">${svc.name}에서 찾아보기 →</a></div>
+            </div>`;
+        } else if (reason) {
+            suggestHtml = `<div class="analysis-card"><div class="analysis-label" style="color:#3b82f6;">💡 추천</div><div class="analysis-text">${suggestService}</div></div>`;
+        }
+    }
 
     const classColors = {
         '세리프': '#D4A574', 'serif': '#D4A574',
@@ -726,6 +758,8 @@ function showResults(text, inputText, mode) {
         ${mood ? `<div class="analysis-card"><div class="analysis-label" style="color:#a78bfa;">✨ 분위기</div><div class="analysis-text">${mood}</div></div>` : ''}
         ${useCase ? `<div class="analysis-card"><div class="analysis-label" style="color:#f472b6;">💡 추천 용도</div><div class="analysis-text">${useCase}</div></div>` : ''}
         ${pairWith ? `<div class="analysis-card"><div class="analysis-label" style="color:#4ade80;">🔗 페어링 추천</div><div class="analysis-text">${pairWith}</div></div>` : ''}
+
+        ${suggestHtml}
 
         <div style="text-align:center;margin-top:12px;font-size:11px;color:#4ade80;">✓ AI 분석 (Cloudflare Workers AI)</div>
 
