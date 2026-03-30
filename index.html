@@ -61,14 +61,47 @@
         .action-btn:hover { opacity: 0.85; }
         .action-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        .loading { display: none; text-align: center; margin: 20px 0; }
+        .loading { display: none; text-align: center; margin: 20px 0; width: 100%; max-width: 520px; }
         .loading.visible { display: block; }
         .loading-text { color: #3b82f6; font-size: 14px; margin-bottom: 8px; }
         .loading-detail { color: #999; font-size: 12px; margin-bottom: 8px; }
         .progress-bar { width: 320px; height: 4px; background: #e0e0e0; border-radius: 2px; margin: 0 auto; overflow: hidden; }
-        .progress-fill-anim { width: 80px; height: 100%; background: #3b82f6; border-radius: 2px; animation: slide 1s ease-in-out infinite; }
         .progress-fill-real { height: 100%; background: #3b82f6; border-radius: 2px; transition: width 0.3s; }
-        @keyframes slide { 0% { transform: translateX(-80px); } 100% { transform: translateX(320px); } }
+
+        .prompt-showcase {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 16px;
+            margin: 12px 0;
+            max-height: 150px;
+            overflow: hidden;
+            position: relative;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #4a6;
+            line-height: 1.6;
+            text-align: left;
+        }
+        .prompt-showcase::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 50px;
+            background: linear-gradient(transparent, #1a1a1a);
+        }
+        .prompt-scroll {
+            animation: scrollUp 8s linear infinite;
+        }
+        @keyframes scrollUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+        .prompt-note {
+            font-size: 12px;
+            color: #3b82f6;
+            font-weight: 600;
+            margin-top: 8px;
+        }
 
         .results { display: none; width: 100%; max-width: 520px; }
         .results.visible { display: block; }
@@ -146,6 +179,51 @@
     <div class="loading-text" id="loadingText">폰트를 비교하고 있어요...</div>
     <div class="loading-detail" id="loadingDetail"></div>
     <div class="progress-bar"><div class="progress-fill-real" id="progressBar" style="width:0%"></div></div>
+
+    <div class="prompt-showcase">
+        <div class="prompt-scroll">
+You are a world-class typography expert.
+Identify the exact font in this image.
+
+IMPORTANT RULES:
+- FONT_NAME must be a REAL, EXISTING font name.
+- Look carefully at: serif vs sans-serif,
+  stroke contrast, letter shapes (a, g, e, R),
+  terminals, x-height ratio.
+- Analyze the stroke width variation.
+- Check if terminals are round or flat.
+- Measure the contrast between thick and thin.
+
+Common fonts to consider:
+Sans-serif: SF Pro, Helvetica Neue, Arial,
+  Futura, Avenir, Gotham, Proxima Nova,
+  Roboto, Inter, Montserrat, Poppins...
+Serif: Times New Roman, Garamond, Bodoni,
+  Baskerville, Georgia, Playfair Display...
+Korean: Sandoll Gothic Neo, Pretendard,
+  Noto Sans KR, NanumGothic, Apple SD...
+
+Answer format:
+FONT_NAME: (specific real font name)
+SIMILAR_FONTS: font1, font2, font3
+CLASSIFICATION: serif/sans-serif/script...
+WEIGHT: Thin/Light/Regular/Medium/Bold...
+FEATURES: (visual characteristics)
+MOOD: (mood and feeling)
+USE_CASE: (recommended usage)
+FREE_ALTERNATIVE: (free alternative)
+
+// Preprocessing: binarization applied
+// Otsu threshold calculated
+// Contrast enhanced 1.5x
+// Edge detection for serif analysis
+// Pixel comparison with 200+ fonts...
+
+You are a world-class typography expert.
+Identify the exact font in this image...
+        </div>
+    </div>
+    <div class="prompt-note">이 과정을 Font Catcher가 자동으로 처리하고 있어요</div>
 </div>
 
 <!-- 결과 -->
