@@ -362,23 +362,28 @@ const CF_TOKEN = "cfut_5HJgHGuVKCV3heXSLcFoda5FfAlLVsWeXS9XNIuJ94715a1b";
 async function analyzeWithCloudflare(imageBase64, confirmedText) {
     const textHint = confirmedText ? `이 이미지의 텍스트는 "${confirmedText}"야.` : '';
 
-    const prompt = `너는 한국과 글로벌 타이포그래피에 정통한 전문가야. ${textHint} 이 이미지에서 보이는 폰트를 분석하고 찾아줘.
+    const prompt = `You are a world-class typography expert. ${textHint} Identify the exact font in this image.
 
-한글 텍스트라면 아래 한글 폰트들을 우선 고려해:
-고딕 계열: 산돌고딕Neo, Pretendard, Noto Sans KR, 나눔고딕, 본고딕, Apple SD 산돌고딕 Neo, 에스코어 드림, G마켓 산스, 넥슨 고딕, 여기어때 잘난체, 카페24 슈퍼매직, 야놀자 야체
-명조 계열: 산돌명조Neo, Noto Serif KR, 나눔명조, 본명조, 마루 부리, KoPub바탕체, 리디바탕
-손글씨/디스플레이: 배민 한나는 열한살, 배민 을지로체, 교보 손글씨, KCC 은영체, 카페24 모야모야, 산돌 삼립호빵체
-영문이라면 Helvetica, Futura, Garamond, Bodoni, Avenir, Gotham 등을 고려해.
+IMPORTANT RULES:
+- FONT_NAME must be a REAL, EXISTING font name. Never invent names.
+- Look carefully at: serif vs sans-serif, stroke contrast, letter shapes (a, g, e, R), terminals, x-height.
+- "Sans-serif" is a CATEGORY, not a font name. Never put it as FONT_NAME.
+- "Monospace" means fixed-width like Courier. Most fonts are NOT monospace.
 
-반드시 아래 형식으로만 답변해:
-FONT_NAME: (가장 유사한 폰트 이름)
-SIMILAR_FONTS: 폰트1, 폰트2, 폰트3
-CLASSIFICATION: (세리프/산세리프/스크립트/디스플레이/모노스페이스 중 하나)
-WEIGHT: (Thin/Light/Regular/Medium/Bold/Black 중 하나)
-FEATURES: (폰트의 시각적 특징 한 줄)
-MOOD: (폰트가 주는 분위기 한 줄)
-USE_CASE: (적합한 사용 상황 한 줄)
-FREE_ALTERNATIVE: (무료 대안 폰트와 다운로드처)`;
+Common fonts to consider:
+Sans-serif: SF Pro, Helvetica Neue, Arial, Futura, Avenir, Gotham, Proxima Nova, Roboto, Inter, Montserrat, Poppins, DM Sans, Pretendard, Noto Sans
+Serif: Times New Roman, Garamond, Bodoni, Baskerville, Georgia, Playfair Display, Noto Serif, Merriweather
+Korean: Sandoll Gothic Neo, Pretendard, Noto Sans KR, NanumGothic, Apple SD Gothic Neo, Noto Serif KR, NanumMyeongjo, Sandoll Myungjo Neo, Maruburi
+
+Answer in this EXACT format only:
+FONT_NAME: (one specific real font name)
+SIMILAR_FONTS: font1, font2, font3
+CLASSIFICATION: (serif/sans-serif/script/display/monospace)
+WEIGHT: (Thin/Light/Regular/Medium/Bold/Black)
+FEATURES: (visual characteristics in one line)
+MOOD: (mood/feeling in one line)
+USE_CASE: (recommended usage in one line)
+FREE_ALTERNATIVE: (free alternative font and where to download)`;
 
     const resp = await fetch('https://font-catcher.eonun197.workers.dev/', {
         method: 'POST',
