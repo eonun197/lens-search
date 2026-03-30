@@ -390,7 +390,9 @@ FREE_ALTERNATIVE: (무료 대안 폰트와 다운로드처)`;
                     { type: 'text', text: prompt },
                     { type: 'image_url', image_url: { url: 'data:image/png;base64,' + imageBase64 } }
                 ]
-            }]
+            }],
+            temperature: 0,
+            max_tokens: 500
         })
     });
 
