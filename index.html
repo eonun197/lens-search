@@ -63,64 +63,29 @@
 
         .loading { display: none; text-align: center; margin: 20px 0; width: 100%; max-width: 520px; }
         .loading.visible { display: block; }
-        .loading-text { color: #3b82f6; font-size: 14px; margin-bottom: 8px; }
-        .loading-detail { color: #999; font-size: 12px; margin-bottom: 8px; }
-        .progress-bar { width: 320px; height: 4px; background: #e0e0e0; border-radius: 2px; margin: 0 auto; overflow: hidden; }
-        .progress-fill-real { height: 100%; background: #3b82f6; border-radius: 2px; transition: width 0.3s; }
-
-        .prompt-showcase {
-            background: transparent;
-            padding: 8px 0;
-            margin: 12px 0;
-            max-height: 180px;
-            overflow: hidden;
+        .loading-step {
+            color: #333; font-size: 14px; font-weight: 600; margin-bottom: 14px;
+        }
+        .glow-bar-wrap {
+            width: 320px; height: 6px; background: #e0e0e0;
+            border-radius: 3px; margin: 0 auto; overflow: visible;
             position: relative;
-            font-size: 13px;
-            text-align: left;
         }
-        .prompt-showcase::after {
-            content: '';
+        .glow-bar-fill {
+            height: 100%; background: linear-gradient(90deg, #93c5fd, #3b82f6);
+            border-radius: 3px; transition: width 0.5s ease; position: relative;
+        }
+        .glow-bar-fill::after {
+            content: '✦';
             position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 50px;
-            background: linear-gradient(transparent, #f5f3ef);
+            right: -8px; top: -10px;
+            font-size: 16px;
+            color: #3b82f6;
+            animation: glowPulse 1s ease-in-out infinite;
         }
-        .chat-bubble {
-            display: inline-block;
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 16px 16px 16px 4px;
-            padding: 8px 14px;
-            margin-bottom: 6px;
-            color: #555;
-            font-size: 13px;
-            max-width: 85%;
-            animation: bubbleIn 0.3s ease;
-        }
-        @keyframes bubbleIn {
-            0% { opacity: 0; transform: translateY(8px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        .prompt-scroll {
-            animation: scrollUp 8s linear infinite;
-        }
-        @keyframes scrollUp {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
-        }
-        .prompt-note {
-            font-size: 13px;
-            color: #888;
-            font-weight: 600;
-            margin-top: 10px;
-        }
-        .spin-icon {
-            display: inline-block;
-            animation: spinIcon 1.5s linear infinite;
-        }
-        @keyframes spinIcon {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.7); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
         .results { display: none; width: 100%; max-width: 520px; }
@@ -196,82 +161,10 @@
 
 <!-- 로딩 -->
 <div class="loading" id="loading">
-    <div class="loading-text" id="loadingText">폰트를 비교하고 있어요...</div>
-    <div class="loading-detail" id="loadingDetail"></div>
-    <div class="progress-bar"><div class="progress-fill-real" id="progressBar" style="width:0%"></div></div>
-
-    <div class="prompt-showcase" id="promptShowcase"></div>
-    <div class="prompt-note"><span class="spin-icon">✏️</span> 분석 중...</div>
-
-    <script>
-    // 실제 챗봇 프롬프트 시뮬레이션 (타이핑 효과)
-    const promptLines = [
-        "이 이미지에서 사용된 폰트를 찾아줘.",
-        "",
-        "세리프인지 산세리프인지 구분해줘.",
-        "획의 굵기 대비를 분석해줘.",
-        "글자의 둥근 정도를 확인해줘.",
-        "소문자 a의 구조를 분석해줘.",
-        "터미널 형태를 확인해줘.",
-        "",
-        "산세리프 후보:",
-        "SF Pro, Helvetica Neue, Futura,",
-        "Avenir, Gotham, Roboto, Inter,",
-        "Montserrat, Poppins, Pretendard,",
-        "Noto Sans KR, 나눔고딕, 산돌고딕Neo",
-        "",
-        "세리프 후보:",
-        "Times New Roman, Garamond, Bodoni,",
-        "Baskerville, Noto Serif KR, 나눔명조,",
-        "산돌명조Neo, 본명조, 마루 부리",
-        "",
-        "폰트의 분위기를 분석해줘.",
-        "어울리는 사용처를 알려줘.",
-        "페어링 폰트를 추천해줘.",
-        "",
-        "폰트 이름은 실존하는 이름만 사용.",
-        "분류명을 폰트 이름으로 쓰지 마.",
-        "",
-        "확신이 없으면 연관 서비스를 추천해줘.",
-        "장식체 → DaFont",
-        "한글 → 산돌구름",
-        "영문 정밀 → WhatTheFont",
-    ];
-
-    function startPromptAnimation() {
-        const el = document.getElementById('promptShowcase');
-        if (!el) return;
-        el.innerHTML = '';
-        let i = 0;
-        function addBubble() {
-            if (i < promptLines.length) {
-                const line = promptLines[i];
-                if (line.trim()) {
-                    const bubble = document.createElement('div');
-                    bubble.className = 'chat-bubble';
-                    bubble.textContent = line;
-                    el.appendChild(bubble);
-                    const br = document.createElement('br');
-                    el.appendChild(br);
-                } else {
-                    const spacer = document.createElement('div');
-                    spacer.style.height = '4px';
-                    el.appendChild(spacer);
-                }
-                el.scrollTop = el.scrollHeight;
-                i++;
-                setTimeout(addBubble, 400);
-            } else {
-                setTimeout(() => {
-                    el.innerHTML = '';
-                    i = 0;
-                    addBubble();
-                }, 1500);
-            }
-        }
-        addBubble();
-    }
-    </script>
+    <div class="loading-step" id="loadingStep">이미지 전처리 중...</div>
+    <div class="glow-bar-wrap">
+        <div class="glow-bar-fill" id="glowBar" style="width:0%"></div>
+    </div>
 </div>
 
 <!-- 결과 -->
@@ -546,20 +439,35 @@ async function startAnalysis() {
     loading.classList.add('visible');
     results.classList.remove('visible');
 
-    document.getElementById('loadingText').textContent = 'AI가 폰트를 분석하고 있어요...';
-    document.getElementById('loadingDetail').textContent = '';
-    document.getElementById('progressBar').style.width = '50%';
-    startPromptAnimation();
+    // 단계별 로딩
+    const steps = [
+        { text: '이미지 전송 중...', pct: 15 },
+        { text: '대비 강화 중...', pct: 30 },
+        { text: '형태 선명도 높이는 중...', pct: 45 },
+        { text: '폰트 특징 분석 중...', pct: 60 },
+        { text: 'AI가 폰트를 찾는 중...', pct: 80 },
+    ];
+    let stepIdx = 0;
+    const stepInterval = setInterval(() => {
+        if (stepIdx < steps.length) {
+            document.getElementById('loadingStep').textContent = steps[stepIdx].text;
+            document.getElementById('glowBar').style.width = steps[stepIdx].pct + '%';
+            stepIdx++;
+        }
+    }, 800);
 
     try {
         const base64 = uploadedImageSrc.split(',')[1];
         const aiResult = await analyzeWithCloudflare(base64, text);
-        document.getElementById('progressBar').style.width = '100%';
+        clearInterval(stepInterval);
+        document.getElementById('glowBar').style.width = '100%';
+        document.getElementById('loadingStep').textContent = '완료!';
+        await new Promise(r => setTimeout(r, 300));
         loading.classList.remove('visible');
         showResults(aiResult, text, 'ai');
     } catch (e) {
-        // AI 실패 시 픽셀 비교로 폴백
-        document.getElementById('loadingText').textContent = '픽셀 비교로 분석 중...';
+        clearInterval(stepInterval);
+        document.getElementById('loadingStep').textContent = '픽셀 비교로 전환 중...';
         await runPixelComparison(text);
     }
 }
@@ -570,13 +478,13 @@ async function runPixelComparison(text) {
     const results = document.getElementById('results');
 
     const MAX_FONTS = GOOGLE_FONTS.length;
-    document.getElementById('loadingDetail').textContent = `${MAX_FONTS}개 폰트 로딩`;
+    document.getElementById('loadingStep').textContent = `${MAX_FONTS}개 폰트 로딩 중...`;
     await loadGoogleFonts(MAX_FONTS, (loaded, total) => {
-        document.getElementById('loadingDetail').textContent = `${loaded}/${total}개 폰트 로딩`;
-        document.getElementById('progressBar').style.width = (loaded / total * 30) + '%';
+        document.getElementById('loadingStep').textContent = `폰트 로딩 중... (${loaded}/${total})`;
+        document.getElementById('glowBar').style.width = (loaded / total * 30) + '%';
     });
 
-    document.getElementById('loadingText').textContent = '이미지와 비교하는 중...';
+    document.getElementById('loadingStep').textContent = '이미지와 비교하는 중...';
     const originalPixels = await getImagePixels(preprocessedImageSrc);
 
     const scores = [];
@@ -586,8 +494,8 @@ async function runPixelComparison(text) {
         const similarity = compareWithFont(originalPixels, text, font.name);
         scores.push({ ...font, score: similarity });
         if (i % 20 === 0) {
-            document.getElementById('progressBar').style.width = (30 + Math.round((i/total)*70)) + '%';
-            document.getElementById('loadingDetail').textContent = `${i}/${total} 폰트 비교 중...`;
+            document.getElementById('glowBar').style.width = (30 + Math.round((i/total)*70)) + '%';
+            document.getElementById('loadingStep').textContent = `폰트 비교 중... (${i}/${total})`;
             await new Promise(r => setTimeout(r, 0));
         }
     }
