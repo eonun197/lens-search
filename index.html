@@ -69,17 +69,18 @@
         .progress-fill-real { height: 100%; background: #3b82f6; border-radius: 2px; transition: width 0.3s; }
 
         .prompt-showcase {
-            background: #1a1a1a;
+            background: #eae7e2;
+            border: 1px solid #ddd;
             border-radius: 10px;
             padding: 16px;
             margin: 12px 0;
             max-height: 150px;
             overflow: hidden;
             position: relative;
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            color: #4a6;
-            line-height: 1.6;
+            font-family: -apple-system, sans-serif;
+            font-size: 12px;
+            color: #888;
+            line-height: 1.7;
             text-align: left;
         }
         .prompt-showcase::after {
@@ -87,7 +88,7 @@
             position: absolute;
             bottom: 0; left: 0; right: 0;
             height: 50px;
-            background: linear-gradient(transparent, #1a1a1a);
+            background: linear-gradient(transparent, #eae7e2);
         }
         .prompt-scroll {
             animation: scrollUp 8s linear infinite;
@@ -182,45 +183,23 @@
 
     <div class="prompt-showcase">
         <div class="prompt-scroll">
-You are a world-class typography expert.
-Identify the exact font in this image.
+너는 타이포그래피 전문가야. 이 이미지에 있는 폰트를 정확하게 찾아줘.
 
-IMPORTANT RULES:
-- FONT_NAME must be a REAL, EXISTING font name.
-- Look carefully at: serif vs sans-serif,
-  stroke contrast, letter shapes (a, g, e, R),
-  terminals, x-height ratio.
-- Analyze the stroke width variation.
-- Check if terminals are round or flat.
-- Measure the contrast between thick and thin.
+우선 세리프인지 산세리프인지 구분해줘. 그리고 획의 굵기 대비를 분석하고, 글자의 둥근 정도, 자간, x높이 비율도 봐줘. 터미널이 둥근지 각진지도 확인해줘.
 
-Common fonts to consider:
-Sans-serif: SF Pro, Helvetica Neue, Arial,
-  Futura, Avenir, Gotham, Proxima Nova,
-  Roboto, Inter, Montserrat, Poppins...
-Serif: Times New Roman, Garamond, Bodoni,
-  Baskerville, Georgia, Playfair Display...
-Korean: Sandoll Gothic Neo, Pretendard,
-  Noto Sans KR, NanumGothic, Apple SD...
+산세리프라면 SF Pro, Helvetica Neue, Futura, Avenir, Gotham, Roboto, Inter, Montserrat, Poppins, Pretendard, Noto Sans KR, 나눔고딕, 산돌고딕Neo, 본고딕 중에서 찾아봐.
 
-Answer format:
-FONT_NAME: (specific real font name)
-SIMILAR_FONTS: font1, font2, font3
-CLASSIFICATION: serif/sans-serif/script...
-WEIGHT: Thin/Light/Regular/Medium/Bold...
-FEATURES: (visual characteristics)
-MOOD: (mood and feeling)
-USE_CASE: (recommended usage)
-FREE_ALTERNATIVE: (free alternative)
+세리프라면 Times New Roman, Garamond, Bodoni, Baskerville, Georgia, Noto Serif KR, 나눔명조, 산돌명조Neo, 본명조, 마루 부리 중에서 찾아봐.
 
-// Preprocessing: binarization applied
-// Otsu threshold calculated
-// Contrast enhanced 1.5x
-// Edge detection for serif analysis
-// Pixel comparison with 200+ fonts...
+폰트 이름은 반드시 실제 존재하는 이름이어야 해. 분류명을 폰트 이름으로 쓰면 안 돼. 모노스페이스는 고정폭 폰트에만 해당해.
 
-You are a world-class typography expert.
-Identify the exact font in this image...
+이 폰트의 분위기가 따뜻한지, 차가운지, 모던한지, 클래식한지, 캐주얼한지, 포멀한지도 알려줘. 그리고 이 폰트가 잘 어울리는 실제 사용처를 구체적으로 알려줘. 포스터, 앱 UI, 카페 메뉴판, 명함, 잡지 본문 같은 예시로.
+
+마지막으로 이 폰트와 잘 어울리는 페어링 폰트도 추천해줘...
+
+전처리 중: 이진화 적용, 오츠 임계값 계산, 대비 1.5배 강화, 세리프 여부 분석, 200개 이상 폰트와 픽셀 비교 진행 중...
+
+너는 타이포그래피 전문가야. 이 이미지에 있는 폰트를 정확하게 찾아줘...
         </div>
     </div>
     <div class="prompt-note">이 과정을 Font Catcher가 자동으로 처리하고 있어요</div>
