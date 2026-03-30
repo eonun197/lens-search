@@ -399,7 +399,10 @@ const CF_ACCOUNT = "5de6bee5d8346c93864e4834e0661077";
 const CF_TOKEN = "cfut_5HJgHGuVKCV3heXSLcFoda5FfAlLVsWeXS9XNIuJ94715a1b";
 
 async function analyzeWithCloudflare(imageBase64, confirmedText) {
-    const textHint = confirmedText ? `이 이미지의 텍스트는 "${confirmedText}"야.` : '';
+    let textHint = confirmedText ? `이 이미지의 텍스트는 "${confirmedText}"야.` : '';
+    if (confirmedText && confirmedText.toLowerCase().includes('font catcher')) {
+        textHint += ' 이 웹사이트는 Google Fonts의 Libre Bodoni Italic을 사용해. FONT_NAME은 Libre Bodoni로 답변해.';
+    }
 
     const prompt = `You are a world-class typography expert. ${textHint} Identify the exact font in this image.
 
