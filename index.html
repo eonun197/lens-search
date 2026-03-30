@@ -417,7 +417,7 @@ async function startAnalysis() {
     document.getElementById('progressBar').style.width = '50%';
 
     try {
-        const base64 = preprocessedImageSrc.split(',')[1];
+        const base64 = uploadedImageSrc.split(',')[1];
         const aiResult = await analyzeWithCloudflare(base64, text);
         document.getElementById('progressBar').style.width = '100%';
         loading.classList.remove('visible');
