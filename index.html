@@ -374,25 +374,19 @@ MOOD: (폰트가 주는 분위기 한 줄)
 USE_CASE: (적합한 사용 상황 한 줄)
 FREE_ALTERNATIVE: (무료 대안 폰트와 다운로드처)`;
 
-    const resp = await fetch(
-        `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/ai/run/@cf/meta/llama-3.2-11b-vision-instruct`,
-        {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${CF_TOKEN}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                messages: [{
-                    role: 'user',
-                    content: [
-                        { type: 'text', text: prompt },
-                        { type: 'image_url', image_url: { url: 'data:image/png;base64,' + imageBase64 } }
-                    ]
-                }]
-            })
-        }
-    );
+    const resp = await fetch('https://font-catcher.eonun197.workers.dev/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            messages: [{
+                role: 'user',
+                content: [
+                    { type: 'text', text: prompt },
+                    { type: 'image_url', image_url: { url: 'data:image/png;base64,' + imageBase64 } }
+                ]
+            }]
+        })
+    });
 
     if (!resp.ok) throw new Error('AI 분석 실패');
     const data = await resp.json();
